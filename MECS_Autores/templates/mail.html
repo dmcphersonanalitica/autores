@@ -1,0 +1,82 @@
+{% extends "home.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <form method="post" action=".">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-envelope"></i>
+                    Envío de reporte
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <div class="row">
+                    {% for field in form.visible_fields %}
+                        {% if field.label == 'Para:' or field.label == 'Asunto:' %}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ field.label }}</label>
+                                    {% render_field field class="form-control" title=field.label autocomplete="off" %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if field.label == 'Mensaje:' %}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Archivo adjunto: </label>
+                                    <i class="fas fa-file-pdf"></i> Reporte de venta.pdf
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>{{ field.label }}</label>
+                                    {% render_field field class="form-control" title=field.label autocomplete="off" autofocus='true' %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <button type="submit" class="btn btn-info">
+                    <i class="fas fa-envelope"></i> Enviar
+                </button>
+                |
+                <a href="{% url "mecs:sale_list" %}" class="btn btn-secondary">
+                    <i class="fas fa-times nav-icon"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = $(this).serializeArray();
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: parameters,
+                dataType: 'json'
+            }).done(function (data) {
+                console.log(data);
+                if (!data.hasOwnProperty('error')) {
+                    location.href = data.listUrl;
+                    return false;
+                }
+                message_error(data.error);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(textStatus + ': ' + errorThrown);
+            }).always(function (data) {
+            });
+
+        });
+    </script>
+{% endblock %}

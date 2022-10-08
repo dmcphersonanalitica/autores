@@ -1,0 +1,45 @@
+{% extends 'form.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block form_components %}
+    {% for field in form.visible_fields %}
+        {% if field.label == 'Activo' %}
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div class="custom-control custom-switch">
+                        {% render_field field type="checkbox" class="custom-control-input form-control" id="customSwitch1" title=field.label autocomplete="off" %}
+                        <label class="custom-control-label" for="customSwitch1">{{ field.label }}</label>
+                    </div>
+                </div>
+            </div>
+        {% elif field.label == 'Usuario' or field.label == 'Contraseña' or field.label == 'Email' %}
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {% render_field field class="form-control" title=field.label autocomplete="off" %}
+                </div>
+            </div>
+        {% endif %}
+        {% if field.label == 'Imagen' %}
+            <div class="image col-md-3" align="center">
+                <div class="form-group">
+                    {% if action == 'add' %}
+                        <img src="{% static 'image/Author.jpg' %}" class="img-rounded elevation-2" alt="Imagen"
+                             id="imageUser"
+                             style="width: 100px; height: 100px;">
+                    {% elif action == 'edit' %}
+                        <img src="{{ userImage }}" class="img-rounded elevation-2" alt="Imagen"
+                             id="imageUser"
+                             style="width: 100px; height: 100px;">
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block script_form %}
+    <script src="{% static 'form.js' %}"></script>
+{% endblock %}
+

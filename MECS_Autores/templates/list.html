@@ -1,0 +1,33 @@
+{% extends "tlist.html" %}
+{% load static %}
+
+{{ super }}
+
+{% block columns %}
+    <tr>
+        <th scope="col">No</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Título</th>
+        <th scope="col">Mercado</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Total</th>
+        <th scope="col">Operaciones</th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block script_list %}
+    <script src="{% static 'js/list.js' %}"></script>
+    <script>
+        {% if request.user.is_superuser %}
+            window.superadm = {args: 'si'};
+        {% else %}
+            window.superadm = {args: 'no'};
+        {% endif %}
+
+    </script>
+{% endblock %}

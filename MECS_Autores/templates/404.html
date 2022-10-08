@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MECS | 404 Página no encontrada</title>
+
+    <link rel="shortcut icon" href="{%static "../static/image/favicon.ico" %}" />
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static "../static/lib/adminlte-3.2.0/plugins/fontawesome-free/css/all.css" %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static "../static/lib/adminlte-3.2.0/css/adminlte.min.css" %}">
+</head>
+<body>
+<div class="content">
+    <div class="row col-md-12" style="margin-top: 15%;">
+        <div class="col-md-4" style="margin-left: 13%;">
+            <a href="https://dmcphersoneditorial.com/">
+                <img src="{% static "../static/lib/adminlte-3.2.0/img/Logo.png" %}" alt="D'McPherson Logo"
+                     class="product-image" style="opacity: .8; width: 60%;">
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <div class="error-page" >
+                <h2 class="headline text-warning"> 404</h2>
+                <div class="error-content">
+                    <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Página no encontrada.</h3>
+                    <p>
+                        No hemos podido encontrar la página que usted desea ver.
+                        Mientras, usted puede <a href="{% url 'mecs:dashboard' %}">regresar al Dashboard.</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

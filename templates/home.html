@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if title != none %}
+        <title>MECS | {{ title }}</title>
+    {% else %}
+        <title>MECS | Envío de reporte</title>
+    {% endif %}
+
+    <link rel="shortcut icon" href="{%static "../static/image/favicon.ico" %}" />
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static "../static/lib/adminlte-3.2.0/plugins/fontawesome-free/css/all.css" %}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet"
+          href="{% static "../static/lib/adminlte-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css" %}">
+    <!-- Jquery Confirm -->
+    <link rel="stylesheet"
+          href="{% static "../static/lib/jquery-confirm-v3.3.4/jquery-confirm.min.css" %}">
+    <!--Bootstrap Switch-->
+    <link rel="stylesheet"
+          href="{% static "../static/lib/adminlte-3.2.0/plugins/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css" %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static "../static/lib/adminlte-3.2.0/css/adminlte.min.css" %}">
+    <!-- Block Head -->
+    {% block head %}
+
+    {% endblock %}
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Navbar -->
+    {% include "header.html" %}
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    {% include "sidebar.html" %}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <section class="content">
+            {% block content %}
+
+            {% endblock %}
+        </section>
+    </div>
+    <!-- /.content-wrapper -->
+
+    {% include "footer.html" %}
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="{% static "../static/lib/adminlte-3.2.0/plugins/jquery/jquery.min.js" %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static "../static/lib/adminlte-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static "../static/lib/adminlte-3.2.0/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js" %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static "../static/lib/adminlte-3.2.0/js/adminlte.min.js" %}"></script>
+<!-- Jquery Confirm -->
+<script src="{% static "../static/lib/jquery-confirm-v3.3.4/jquery-confirm.min.js" %}"></script>
+<!-- Funtions -->
+<script src="{% static "../static/js/functions.js" %}"></script>
+<!-- Block Script -->
+{% block script %}
+
+{% endblock %}
+</body>
+</html>

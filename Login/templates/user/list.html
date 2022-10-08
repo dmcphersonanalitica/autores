@@ -1,0 +1,21 @@
+{% extends 'tlist.html' %}
+{% load static %}
+
+{% block columns %}
+    <tr>
+        <th scope="col" style="width: 5%; text-align: center">Nro</th>
+        <th scope="col" style="width: 25%; text-align: center">Nombre</th>
+        <th scope="col" style="width: 10%; text-align: center">Usuario</th>
+        <th scope="col" style="width: 15%; text-align: center">Fecha de registro</th>
+        <th scope="col" style="width: 15%; text-align: center">Última entrada</th>
+        <th scope="col" style="width: 15%; text-align: center">Opciones</th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block script_list %}
+    <script src="{% static 'user/js/list.js' %}"></script>
+{% endblock %}

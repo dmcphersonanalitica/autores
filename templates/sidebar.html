@@ -1,0 +1,72 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="https://dmcphersoneditorial.com/" class="brand-link">
+        <img src="{% static "../static/lib/adminlte-3.2.0/img/Logo1.png" %}" alt="D'McPherson Logo"
+             class="brand-image" style="opacity: .8">
+        <span class="brand-text font-weight-normal" style="font-size: medium">D'McPherson Editorial</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                {% if request.user.get_author_image %}
+                    <img src="{{ request.user.get_author_image }}"
+                         class="img-rounded elevation-2 bg-white" alt="User Image">
+                {% else %}
+                    <img src="{% static "../static/image/Author.jpg" %}"
+                         class="img-rounded elevation-2 bg-white" alt="User Image">
+                {% endif %}
+            </div>
+            <div class="info">
+                <a href="{% url 'login:user_profile' %}" class="d-block">
+                    {% if request.user.first_name %}
+                        {{ request.user.first_name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                     with font-awesome or any other icon font library -->
+                <li class="nav-item">
+                    <a href="{% url "mecs:dashboard" %}"
+                       class="nav-link {% if father == 'dashboard' %}active{% endif %}">
+                        <i class="nav-icon fas fa-desktop"></i>
+                        <p>
+                            Dashboard
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url "mecs:sale_list" %}" class="nav-link {% if father == 'sale' or father == none %}active{% endif %}">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>
+                            Ventas
+                        </p>
+                    </a>
+                </li>
+                {% if request.user.is_superuser %}
+                    <li class="nav-item">
+                        <a href="{% url "login:user_list" %}"
+                           class="nav-link {% if father == 'usuario' %}active{% endif %}">
+                            <i class="nav-icon fas fa-user-friends"></i>
+                            <p>
+                                Usuarios
+                            </p>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

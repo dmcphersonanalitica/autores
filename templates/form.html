@@ -1,0 +1,157 @@
+{% extends "home.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <form method="post" action="." enctype="multipart/form-data">
+        <input type="hidden" name="action" value="{{ action }}">
+        {% csrf_token %}
+        <div class="mt-3 {% if action == "add" %}
+                    card card-primary
+                {% elif action == "edit" %}
+                    card card-warning
+                {% else %}
+                    card card-primary
+                {% endif %}">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == "add" %}
+                        <i class="fas fa-plus"></i>
+                    {% elif action == "edit" %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    {% block form_components %}
+
+                    {% endblock %}
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                {% if action == "add" %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Crear
+                    </button>
+                {% elif action == "edit" %}
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save"></i> Editar
+                    </button>
+                {% endif %}
+                |
+                <a href="{{ listUrl }}" class="btn btn-secondary">
+                    <i class="fas fa-times nav-icon"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    {% block script_form %}
+
+    {% endblock %}
+    <script>
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            var errors = '';
+            var classButton = '';
+            var typeDialog = '';
+            if ('{{ action }}' === 'add'){
+                classButton = 'btn-primary';
+                typeDialog = 'blue';
+            } else {
+                classButton = 'btn-warning';
+                typeDialog = 'orange';
+            }
+
+            $.confirm({
+                theme: 'material',
+                title: 'MECS-Información',
+                icon: 'fa fa-info-circle',
+                content: '¿Esta seguro de la operación ha realizar?',
+                columnClass: 'small',
+                type: typeDialog,
+                typeAnimated: true,
+                cancelButtonClass: 'btn-primary',
+                draggable: true,
+                dragWindowBorder: false,
+                buttons: {
+                    info: {
+                        text: "Si",
+                        btnClass: classButton,
+                        action: function () {
+                            $.ajax({
+                                url: window.location.pathname,
+                                type: 'POST',
+                                data: parameters,
+                                dataType: 'json',
+                                processData: false,
+                                contentType: false
+                            }).done(function (data) {
+                                if (!data.hasOwnProperty('error')) {
+                                    location.href = '{{ listUrl }}';
+                                    return false;
+                                }
+                                errors = '<ul style="text-align: left">';
+                                $.each(data.error, function (key, value) {
+                                    errors += '<li>' + value + '</li>';
+                                });
+                                errors += '</ul>';
+                                $.confirm({
+                                    theme: 'material',
+                                    title: 'MECS-Error',
+                                    icon: 'fa fa-ban',
+                                    content: errors,
+                                    columnClass: 'medium',
+                                    type: 'red',
+                                    typeAnimated: true,
+                                    cancelButtonClass: 'btn-primary',
+                                    draggable: true,
+                                    dragWindowBorder: false,
+                                    buttons: {
+                                        info: {
+                                            text: "Aceptar",
+                                            btnClass: 'btn-primary',
+                                            action: function () {
+                                                if ('{{ father }}' === 'usuario') {
+                                                    $.ajax({
+                                                        url: window.location.pathname,
+                                                        type: 'POST',
+                                                        data: parameters,
+                                                        dataType: 'json',
+                                                        processData: false,
+                                                        contentType: false
+                                                    }).done(function () {
+                                                        return false;
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                alert(textStatus + ': ' + errorThrown);
+                            }).always(function (data) {
+                            });
+                        }
+                    },
+                    danger: {
+                        text: "No",
+                        btnClass: 'btn-secondary',
+                        action: function () {
+
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

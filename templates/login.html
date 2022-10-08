@@ -1,0 +1,108 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MECS | {{ title }}</title>
+
+    <link rel="shortcut icon" href="{%static "../static/image/favicon.ico" %}" />
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="{% static "../static/lib/adminlte-3.2.0/plugins/fontawesome-free/css/all.min.css" %}">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet"
+          href="{% static "../../static/lib/adminlte-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css" %}">
+    <!-- Jquery Confirm -->
+    <link rel="stylesheet"
+          href="{% static "../static/lib/jquery-confirm-v3.3.4/jquery-confirm.min.css" %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static "../../static/lib/adminlte-3.2.0/css/adminlte.min.css" %}">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="card">
+        <div class="card-body login-card-body">
+            <div class="login-logo">
+                <a href="https://dmcphersoneditorial.com/">
+                    <img src="{% static "../static/lib/adminlte-3.2.0/img/Logo.png" %}" alt="D'McPherson Logo"
+                         class="product-image" style="opacity: .8;">
+                </a>
+            </div>
+
+            <form action="." method="post">
+                <input type="hidden" name="next" value="{{ next }}">
+                {% csrf_token %}
+                <div class="input mb-3">
+                    {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Usuario' }}
+                </div>
+                <div class="input mb-3">
+                    {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Contraseña' }}
+                </div>
+                <div class="row-items-center">
+                    <div class="col-lg-12">
+                        <button type="submit" class="btn bg-gradient-primary btn-block"><i
+                                class="fas fa-sign-in-alt"></i>
+                            Iniciar sesión
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.login-card-body -->
+    </div>
+</div>
+
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{% static "../../static/lib/adminlte-3.2.0/plugins/jquery/jquery.min.js" %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static "../../static/lib/adminlte-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static "../../static/lib/adminlte-3.2.0/js/adminlte.min.js" %}"></script>
+<!-- Jquery Confirm -->
+<script src="{% static "../static/lib/jquery-confirm-v3.3.4/jquery-confirm.min.js" %}"></script>
+<!-- Funtions -->
+<script src="{% static "../../static/js/functions.js" %}"></script>
+
+<script>
+    {% if form.errors %}
+        var errors = '<ul style="text-align: left">';
+        {% for field  in form %}
+            {% for error in field.errors %}
+                errors += '<li>' + '{{ error }}' + '</li>';
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            errors += '<li>' + '{{ error }}' + '</li>';
+        {% endfor %}
+        errors += '</ul>';
+        $.confirm({
+            theme: 'material',
+            title: 'MECS-Error',
+            icon: 'fa fa-ban',
+            content: errors,
+            columnClass: 'medium',
+            type: 'red',
+            typeAnimated: true,
+            cancelButtonClass: 'btn-primary',
+            draggable: true,
+            dragWindowBorder: false,
+            buttons: {
+                info: {
+                    text: "Aceptar",
+                    btnClass: 'btn-primary',
+                    action: function () {
+                    }
+                }
+            }
+        });
+    {% endif %}
+</script>
+</body>
+</html>
