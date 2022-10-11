@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath autores core.wsgi
+web: gunicorn auotres.wsgi --log-file -
