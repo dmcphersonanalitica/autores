@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # Libs
     'widget_tweaks',
     "anymail",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
