@@ -172,4 +172,6 @@ CACHES = {
     }
 }
 
+WHITENOISE_MANIFEST_STRICT = False
+
 django_heroku.settings(locals())
