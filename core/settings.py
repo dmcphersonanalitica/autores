@@ -172,6 +172,8 @@ CACHES = {
     }
 }
 
+WHITENOISE_USE_FINDERS = True
 WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_ALLOW_ALL_ORIGINS = True
 
 django_heroku.settings(locals())
