@@ -1,1 +1,1 @@
-web: gunicorn autores.core.wsgi --log-file -
+web: gunicorn autores.wsgi --log-file -
