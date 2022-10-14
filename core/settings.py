@@ -31,7 +31,7 @@ DEBUG = False
 
 # ALLOWED_HOSTS = ['https://autores.dmcphersoneditorial.com/']
 
-ALLOWED_HOSTS = ['autores-mecs.herokuapp.com', 'https://autores-mecs.herokuapp.com/']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
