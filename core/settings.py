@@ -88,8 +88,19 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = db.MYSQLONLINE
+DATABASES = {
+    'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'edit_dmcpherson_editorial_mecs',
+            'USER': 'edit_dmcpherson_editorial_mecs',
+            'PASSWORD': '6S5Yke8b',
+            'HOST': 'server.mcphersoncloud.com',
+            'PORT': 3306
+        }
+}
 
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
