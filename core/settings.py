@@ -94,7 +94,7 @@ DATABASES = {
             'NAME': 'edit_dmcpherson_editorial_mecs',
             'USER': 'edit_dmcpherson_editorial_mecs',
             'PASSWORD': '6S5Yke8b',
-            'HOST': 'server.mcphersoncloud.com',
+            'HOST': '148.163.68.20',
             'PORT': 3306
         }
 }
