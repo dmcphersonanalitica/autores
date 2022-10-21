@@ -94,7 +94,7 @@ DATABASES = {
             'NAME': 'edit_dmcpherson_editorial_mecs',
             'USER': 'edit_dmcpherson_editorial_mecs',
             'PASSWORD': '6S5Yke8b',
-            'HOST': '148.163.68.20',
+            'HOST': 'server.mcphersoncloud.com',
             'PORT': 3306
         }
 }
@@ -189,4 +189,4 @@ WHITENOISE_MANIFEST_STRICT = False
 WHITENOISE_ALLOW_ALL_ORIGINS = True
 
 django_heroku.settings(locals())
-# del DATABASES['default']['OPTIONS']['sslmode']
+del DATABASES['default']['OPTIONS']['sslmode']
