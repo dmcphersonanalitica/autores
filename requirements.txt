@@ -30,7 +30,7 @@ Pillow==9.2.0
 psycopg2==2.9.4
 psycopg2-binary==2.9.4
 pycparser==2.21
-# pylibmc==1.5.1
+pylibmc==1.5.1
 pyHanko==0.15.0
 pyhanko-certvalidator==0.19.5
 pymemcache==3.5.2
