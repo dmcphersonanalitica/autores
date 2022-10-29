@@ -58,21 +58,22 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.last_ventas().year
-            libros = Libros.objects.filter(autor=self.request.user.autores)
+            libros = Libros.objects.filter(autor_id=self.request.user.autores_id).only('id')
             total_general = self.total_ventas()
             month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
                      'Noviembre', 'Diciembre']
 
-            for m in range(1, 13):
-                total = 0
-                for i in libros:
-                    total += Ventas.objects.filter(libro=i, fecha__year=year, fecha__month=m).aggregate(t=Coalesce(
-                        Sum('totales'), 0, output_field=FloatField())).get('t')
-                if total > 0:
-                    porciento = total * float(100) / float(total_general)
-                else:
-                    porciento = 0
-                data.append([month[m - 1], float(porciento)])
+            if len(libros) > 0:
+                for m in range(1, 13):
+                    total = 0
+                    for i in libros:
+                        total += Ventas.objects.filter(libro_id=i.id, fecha__year=year, fecha__month=m).only('totales').aggregate(t=Coalesce(
+                            Sum('totales'), 0, output_field=FloatField())).get('t')
+                    if total > 0:
+                        porciento = total * float(100) / float(total_general)
+                    else:
+                        porciento = 0
+                    data.append([month[m - 1], float(porciento)])
         except Exception as e:
             data['error'] = str(e)
         return data
@@ -167,18 +168,19 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def total_ventas(self):
         if self.request.user.is_superuser:
-            libros = Libros.objects.all()
+            #libros = Libros.objects.all().only
             total = 0
-            for i in libros:
-                total += Ventas.objects.filter(libro=i).aggregate(
-                    t=Coalesce(Sum('totales'), 0, output_field=FloatField(.02))).get('t')
+            #for i in libros:
+            total = Ventas.objects.all().only('totales').aggregate(
+                t=Coalesce(Sum('totales'), 0, output_field=FloatField(.02))).get('t')
             return total
 
-        libros = Libros.objects.filter(autor=self.request.user.autores)
+        libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
         total = 0
-        for i in libros:
-            total += Ventas.objects.filter(libro=i).aggregate(
-                t=Coalesce(Sum('totales'), 0, output_field=FloatField(.02))).get('t')
+        if len(libros) > 0:
+            for i in libros:
+                total += Ventas.objects.filter(libro_id=i.id).only('totales').aggregate(
+                    t=Coalesce(Sum('totales'), 0, output_field=FloatField(.02))).get('t')
         return total
 
     def get_context_data(self, **kwargs):
