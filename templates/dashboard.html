@@ -179,7 +179,7 @@
             series: [
                 {% if not request.user.is_superuser %}
                     {% for g in graph_sales_five_year %}
-                        {% cache None 'graph' g %}
+                        {% cache None 'graph' %}
                             {
                                 name: {{ g | safe }}[0],
                                 data: {{ g | safe}}[1]
@@ -188,7 +188,7 @@
                     {% endfor %}
                 {% else %}
                     {% for g in graph_gender_five_year %}
-                        {% cache None 'graph' g %}
+                        {% cache None 'graph1' %}
                             {
                                 name: {{ g | safe }}[0],
                                 data: {{ g | safe}}[1]
