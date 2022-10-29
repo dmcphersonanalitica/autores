@@ -203,10 +203,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             context['graph_sales_five_year'] = self.graph_sales_five_year()
             context['graph_five_year'] = self.graph_five_year()
             context['graph_sales_month_last_year'] = self.graph_sales_month_last_year()
-        if self.request.user.is_superuser:
-            context['graph_five_year'] = self.graph_five_year()
-            context['graph_sales_month_last_year_general'] = self.graph_sales_month_last_year_general()
-            context['graph_gender_five_year'] = self.graph_gender_five_year()
+        #if self.request.user.is_superuser:
+            #context['graph_five_year'] = self.graph_five_year()
+            #context['graph_sales_month_last_year_general'] = self.graph_sales_month_last_year_general()
+            #context['graph_gender_five_year'] = self.graph_gender_five_year()
         return context
 
 
