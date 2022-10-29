@@ -238,8 +238,9 @@ class VentasListView(LoginRequiredMixin, ListView):
                     if hasattr(request.user, 'autores'):
                         libros = Libros.objects.filter(autor_id=request.user.autores.id).only('id')
                         for i in libros:
-                            for j in Ventas.objects.filter(libro_id=i.id).only('fecha', 'mercado', 'libro',
-                                                                               'cantidad', 'precio', 'totales'):
+                            ventas = Ventas.objects.filter(libro_id=i.id).only('fecha', 'mercado', 'libro',
+                                                                               'cantidad', 'precio', 'totales')
+                            for j in ventas:
                                 item = j.toJson()
                                 date = month[j.fecha.month - 1] + ' ' + j.fecha.strftime('%Y')
                                 item['fecha_format'] = date  # j.fecha.strftime('%B %Y')
