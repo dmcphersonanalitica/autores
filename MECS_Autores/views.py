@@ -22,10 +22,8 @@ from django.conf import settings
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
-VIEW_KEY = ""
 
-
-#@cache_page(None)
+@cache_page(None)
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
 
