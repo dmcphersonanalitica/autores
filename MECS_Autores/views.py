@@ -210,6 +210,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 class VentasListView(LoginRequiredMixin, ListView):
     model = Ventas
+    paginate_by = 25
     template_name = "list.html"
 
     @method_decorator(csrf_exempt)
