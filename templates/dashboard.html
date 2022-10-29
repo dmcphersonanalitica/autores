@@ -121,152 +121,152 @@
     </div>
 
 
-    <script type="application/javascript">
-        //Graph column
-        Highcharts.chart('container', {
-            chart: {
-                type: 'column',
-                backgroundColor: '#c2c7d0',
-                borderRadius: '20px',
-                borderWidth: '2',
-                borderColor: '#818990',
-                spacingTop: 20
-            },
-            exporting: {
-                enabled: false
-            },
-            credits: {
-                enabled: false
-            },
-            title: {
-                {% if not request.user.is_superuser %}
-                    text: 'Libros vendidos - Últimos 5 años'
-                {% else %}
-                    text: '3 Géneros más vendidos - Últimos 5 años'
-                {% endif %}
-            },
-            subtitle: {
-                text: 'Hasta el año de la última fecha de venta'
-            },
-            xAxis: {
-                categories: [
-                    {% for m in graph_five_year %}
-                        {{m | safe}},
-                    {% endfor %}
-                ],
-                crosshair: true
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Cantidad (unidades)'
-                }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y} unidades</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: [
-                {% if not request.user.is_superuser %}
-                    {% for g in graph_sales_five_year %}
-                        {% cache None 'graph' %}
-                            {
-                                name: {{ g | safe }}[0],
-                                data: {{ g | safe}}[1]
-                            },
-                        {% endcache %}
-                    {% endfor %}
-                {% else %}
-                    {% for g in graph_gender_five_year %}
-                        {% cache None 'graph1' %}
-                            {
-                                name: {{ g | safe }}[0],
-                                data: {{ g | safe}}[1]
-                            },
-                        {% endcache %}
-                    {% endfor %}
-                {% endif %}
-            ]
-        });
-
-        //Graph pie
-        Highcharts.chart('container1', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie',
-                backgroundColor: '#c2c7d0',
-                borderRadius: '20px',
-                borderWidth: '2',
-                borderColor: '#818990',
-                spacingTop: 20
-            },
-            exporting: {
-                enabled: false
-            },
-            credits: {
-                enabled: false
-            },
-            title: {
-                text: 'Porciento de venta mensual'
-            },
-            subtitle: {
-                text: 'Año de la última fecha de venta'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.2f} %'
-                    }
-                }
-            },
-            series: [{
-                name: 'Porciento',
-                colorByPoint: true,
-                data: [
-                    {% if not request.user.is_superuser %}
-                        {% for g in graph_sales_month_last_year %}
-                            {% cache None 'graph' g %}
-                                {
-                                    name: {{ g | safe}}[0],
-                                    y: {{ g | safe}}[1]
-                                },
-                            {% endcache %}
-                        {% endfor %}
-                    {% else %}
-                        {% for g in graph_sales_month_last_year_general %}
-                            {% cache None 'graph' g %}
-                                {
-                                    name: {{ g | safe}}[0],
-                                    y: {{ g | safe}}[1]
-                                },
-                            {% endcache %}
-                        {% endfor %}
-                    {% endif %}
-                ]
-            }]
-        });
-    </script>
+{#    <script type="application/javascript">#}
+{#        //Graph column#}
+{#        Highcharts.chart('container', {#}
+{#            chart: {#}
+{#                type: 'column',#}
+{#                backgroundColor: '#c2c7d0',#}
+{#                borderRadius: '20px',#}
+{#                borderWidth: '2',#}
+{#                borderColor: '#818990',#}
+{#                spacingTop: 20#}
+{#            },#}
+{#            exporting: {#}
+{#                enabled: false#}
+{#            },#}
+{#            credits: {#}
+{#                enabled: false#}
+{#            },#}
+{#            title: {#}
+{#                {% if not request.user.is_superuser %}#}
+{#                    text: 'Libros vendidos - Últimos 5 años'#}
+{#                {% else %}#}
+{#                    text: '3 Géneros más vendidos - Últimos 5 años'#}
+{#                {% endif %}#}
+{#            },#}
+{#            subtitle: {#}
+{#                text: 'Hasta el año de la última fecha de venta'#}
+{#            },#}
+{#            xAxis: {#}
+{#                categories: [#}
+{#                    {% for m in graph_five_year %}#}
+{#                        {{m | safe}},#}
+{#                    {% endfor %}#}
+{#                ],#}
+{#                crosshair: true#}
+{#            },#}
+{#            yAxis: {#}
+{#                min: 0,#}
+{#                title: {#}
+{#                    text: 'Cantidad (unidades)'#}
+{#                }#}
+{#            },#}
+{#            tooltip: {#}
+{#                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',#}
+{#                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +#}
+{#                    '<td style="padding:0"><b>{point.y} unidades</b></td></tr>',#}
+{#                footerFormat: '</table>',#}
+{#                shared: true,#}
+{#                useHTML: true#}
+{#            },#}
+{#            plotOptions: {#}
+{#                column: {#}
+{#                    pointPadding: 0.2,#}
+{#                    borderWidth: 0#}
+{#                }#}
+{#            },#}
+{#            series: [#}
+{#                {% if not request.user.is_superuser %}#}
+{#                    {% for g in graph_sales_five_year %}#}
+{#                        {% cache None 'graph' %}#}
+{#                            {#}
+{#                                name: {{ g | safe }}[0],#}
+{#                                data: {{ g | safe}}[1]#}
+{#                            },#}
+{#                        {% endcache %}#}
+{#                    {% endfor %}#}
+{#                {% else %}#}
+{#                    {% for g in graph_gender_five_year %}#}
+{#                        {% cache None 'graph1' %}#}
+{#                            {#}
+{#                                name: {{ g | safe }}[0],#}
+{#                                data: {{ g | safe}}[1]#}
+{#                            },#}
+{#                        {% endcache %}#}
+{#                    {% endfor %}#}
+{#                {% endif %}#}
+{#            ]#}
+{#        });#}
+{##}
+{#        //Graph pie#}
+{#        Highcharts.chart('container1', {#}
+{#            chart: {#}
+{#                plotBackgroundColor: null,#}
+{#                plotBorderWidth: null,#}
+{#                plotShadow: false,#}
+{#                type: 'pie',#}
+{#                backgroundColor: '#c2c7d0',#}
+{#                borderRadius: '20px',#}
+{#                borderWidth: '2',#}
+{#                borderColor: '#818990',#}
+{#                spacingTop: 20#}
+{#            },#}
+{#            exporting: {#}
+{#                enabled: false#}
+{#            },#}
+{#            credits: {#}
+{#                enabled: false#}
+{#            },#}
+{#            title: {#}
+{#                text: 'Porciento de venta mensual'#}
+{#            },#}
+{#            subtitle: {#}
+{#                text: 'Año de la última fecha de venta'#}
+{#            },#}
+{#            tooltip: {#}
+{#                pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'#}
+{#            },#}
+{#            accessibility: {#}
+{#                point: {#}
+{#                    valueSuffix: '%'#}
+{#                }#}
+{#            },#}
+{#            plotOptions: {#}
+{#                pie: {#}
+{#                    allowPointSelect: true,#}
+{#                    cursor: 'pointer',#}
+{#                    dataLabels: {#}
+{#                        enabled: true,#}
+{#                        format: '<b>{point.name}</b>: {point.percentage:.2f} %'#}
+{#                    }#}
+{#                }#}
+{#            },#}
+{#            series: [{#}
+{#                name: 'Porciento',#}
+{#                colorByPoint: true,#}
+{#                data: [#}
+{#                    {% if not request.user.is_superuser %}#}
+{#                        {% for g in graph_sales_month_last_year %}#}
+{#                            {% cache None 'graph' g %}#}
+{#                                {#}
+{#                                    name: {{ g | safe}}[0],#}
+{#                                    y: {{ g | safe}}[1]#}
+{#                                },#}
+{#                            {% endcache %}#}
+{#                        {% endfor %}#}
+{#                    {% else %}#}
+{#                        {% for g in graph_sales_month_last_year_general %}#}
+{#                            {% cache None 'graph' g %}#}
+{#                                {#}
+{#                                    name: {{ g | safe}}[0],#}
+{#                                    y: {{ g | safe}}[1]#}
+{#                                },#}
+{#                            {% endcache %}#}
+{#                        {% endfor %}#}
+{#                    {% endif %}#}
+{#                ]#}
+{#            }]#}
+{#        });#}
+{#    </script>#}
 {% endblock %}
