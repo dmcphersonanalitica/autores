@@ -9,6 +9,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, TemplateView, View, FormView
 
@@ -21,7 +22,10 @@ from django.conf import settings
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
+VIEW_KEY = ""
 
+
+@cache_page(None)
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
 
@@ -209,11 +213,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
+@cache_page(None)
 class VentasListView(LoginRequiredMixin, ListView):
     model = Ventas
     template_name = "list.html"
 
-    @method_decorator(csrf_exempt)
+    #@method_decorator(csrf_exempt)
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -264,6 +269,7 @@ class VentasListView(LoginRequiredMixin, ListView):
         return context
 
 
+@cache_page(None)
 class VentasDetailView(LoginRequiredMixin, DetailView):
     model = Ventas
     template_name = "detail.html"
@@ -316,7 +322,7 @@ class VentasDetailView(LoginRequiredMixin, DetailView):
         context['father'] = 'sale'
         return context
 
-
+@cache_page(None)
 class VentasInvoicePdfView(LoginRequiredMixin, View):
     def link_callback(self, uri, rel):
         """
@@ -472,90 +478,3 @@ def page_500(request):
     nombre_template = '500.html'
 
     return render(request, template_name=nombre_template, status=500)
-
-# def SendEmail(request, *args, **kwargs):
-#     try:
-#         if request.user.is_authenticated and request.user.is_superuser:
-#             if request.method == 'POST':
-#                 form = EmailForm(request.POST)
-#                 if form.is_valid():
-#                     cd = form.cleaned_data
-#                     email = EmailMessage(cd['asunto'], cd['mensaje'], 'contabilidad@dmcphersoneditorial.com',
-#                                          [cd['to']])
-#                     # email.subject = cd['asunto']
-#                     # email.from_email = 'contabilidad@dmcphersoneditorial.com'
-#                     # email.to = [cd['to']]
-#                     # email.body = cd['mensaje']
-#                     # email.attach(sale.libro.titulo + ' -- ' + sale.fecha.strftime('%B %Y') + '.pdf"', Invoice_PDF(kwargs['pk']),'application/pdf')
-#                     file = Invoice_PDF(kwargs['pk'])
-#                     email.attach_file(file)
-#                     # email.attach_alternative(Invoice_PDF(kwargs['pk']), 'text/html')
-#                     email.send()
-#                     # subject = cd['asunto']
-#                     # message = cd['mensaje']
-#                     # send_mail(subject, message, 'contabilidad@dmcphersoneditorial.com', [cd['to']])
-#                 return HttpResponseRedirect(reverse_lazy('mecs:sale_list'))
-#             else:
-#                 sale = Ventas.objects.get(pk=kwargs['pk'])
-#                 to = sale.libro.autor.correo
-#                 month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre',
-#                          'Octubre',
-#                          'Noviembre', 'Diciembre']
-#                 date = month[sale.fecha.month - 1] + ' ' + sale.fecha.strftime('%Y')
-#                 initial_data = {'to': to, 'asunto': 'Nuevo reporte de pago.', 'mensaje': 'Estimado escritor: \n'
-#                                                                                          'Cumpliendo con lo establecido y '
-#                                                                                          'pactado en nuestro contrato, '
-#                                                                                          'nuestra editorial se complace en '
-#                                                                                          'enviarle el reporte de venta '
-#                                                                                          'correspondiente a la fecha '
-#                                                                                          + date + ' del libro '
-#                                                                                          + sale.libro.titulo +
-#                                                                                          '. Agradecemos una vez más su '
-#                                                                                          'presencia en nuestro catálogo. '
-#                                                                                          'Esperamos su acuse de recibo. '
-#                                                                                          '\nLe saluda cordialmente el equipo '
-#                                                                                          'de D´McPherson Editorial. '
-#                                                                                          '\nPD: Para revisar el archivo '
-#                                                                                          'adjunto debe hacerlo desde una '
-#                                                                                          'Computadora o Laptop.'}
-#                 form = EmailForm(initial=initial_data)
-#             return render(request, 'mail.html', {'form': form})
-#         else:
-#             return HttpResponseRedirect(reverse_lazy('mecs:sale_list'))
-#     except Exception as ex:
-#         pass
-#
-#
-# def Invoice_PDF(id):
-#     try:
-#         sale = Ventas.objects.get(pk=id)
-#
-#         template = get_template('invoice.html')
-#         xciento = sale.libro.xciento * sale.totales / 100
-#         sales = Ventas.objects.filter(libro=sale.libro)
-#         monto = 0
-#         for sal in sales:
-#             monto += round(sal.libro.xciento * sal.totales / 100, 2)
-#         adeudo = sale.libro.anticipo - monto
-#         context = {
-#             'sale': sale,
-#             'logo': '{}{}'.format(settings.STATIC_ROOT, 'image/1.png'),
-#             'confirm': '{}{}'.format(settings.STATIC_ROOT, 'image/2.png'),
-#             'xciento': xciento,
-#             'adeudo': adeudo
-#         }
-#         html = template.render(context)
-#
-#         outputFilename = '{}{}'.format(settings.STATIC_ROOT, 'pdf/Reporte.pdf')
-#         resultFile = open(outputFilename, "x+b")
-#         pisa_status = pisa.CreatePDF(html, dest=resultFile)
-#         resultFile.close()
-#
-#         # response = HttpResponse(content_type='application/pdf')
-#         # response['Content-Disposition'] = 'attachment; filename="' + sale.libro.titulo + ' -- ' + sale.fecha.strftime(
-#         #     '%B %Y') + '.pdf"'
-#         # pisa.CreatePDF(html, dest=response, link_callback=link_callback)
-#         # return response
-#         return outputFilename
-#     except Exception as ex:
-#         pass
