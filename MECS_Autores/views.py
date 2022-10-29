@@ -22,6 +22,10 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 
 
+month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
+                     'Noviembre', 'Diciembre']
+
+
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
 
@@ -59,8 +63,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             year = self.last_ventas().year
             libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
             total_general = self.total_ventas()
-            month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
-                     'Noviembre', 'Diciembre']
 
             if len(libros) > 0:
                 for m in range(1, 13):
@@ -82,8 +84,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             data = []
             year = self.last_ventas().year
             total_general = self.total_ventas()
-            month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
-                     'Noviembre', 'Diciembre']
 
             for m in range(1, 13):
                 total = 0
@@ -164,9 +164,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def total_ventas(self):
         if self.request.user.is_superuser:
-            #libros = Libros.objects.all().only
-            total = 0
-            #for i in libros:
             total = Ventas.objects.all().only('totales').aggregate(
                 t=Coalesce(Sum('totales'), 0, output_field=FloatField(.02))).get('t')
             return total
@@ -221,8 +218,6 @@ class VentasListView(LoginRequiredMixin, ListView):
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
-                     'Noviembre', 'Diciembre']
             action = request.POST['action']
             if action == 'list':
                 if request.user.is_superuser:
@@ -243,7 +238,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                     if hasattr(request.user, 'autores'):
                         libros = Libros.objects.filter(autor_id=request.user.autores.id).only('id')
                         for i in libros:
-                            for j in Ventas.objects.filter(libro_id=i.id).only('fecha', 'mercado', 'libro__titulo',
+                            for j in Ventas.objects.filter(libro_id=i.id).only('fecha', 'mercado', 'libro',
                                                                                'cantidad', 'precio', 'totales'):
                                 item = j.toJson()
                                 date = month[j.fecha.month - 1] + ' ' + j.fecha.strftime('%Y')
