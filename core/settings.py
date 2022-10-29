@@ -189,7 +189,7 @@ def get_cache():
             # Keep connection alive
             'tcp_keepalive': True,
             # Timeout settings
-            'connect_timeout': 20000, # ms
+            'connect_timeout': 2000, # ms
             'send_timeout': 750 * 1000, # us
             'receive_timeout': 750 * 1000, # us
             '_poll_timeout': 2000, # ms
