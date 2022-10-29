@@ -9,7 +9,6 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, TemplateView, View, FormView
 
@@ -209,12 +208,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-#@cache_page(None)
 class VentasListView(LoginRequiredMixin, ListView):
     model = Ventas
     template_name = "list.html"
 
-    #@method_decorator(csrf_exempt)
+    @method_decorator(csrf_exempt)
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -229,7 +227,9 @@ class VentasListView(LoginRequiredMixin, ListView):
                 if request.user.is_superuser:
                     data = []
                     position = 1
-                    for i in Ventas.objects.all().order_by('fecha'):
+                    ventas = Ventas.objects.all().select_related('libro').only('fecha', 'mercado', 'libro__titulo',
+                                                                               'cantidad', 'precio', 'totales').order_by('fecha')
+                    for i in ventas:
                         item = i.toJson()
                         date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
                         item['fecha_format'] = date  # i.fecha.strftime('%B %Y')
@@ -240,9 +240,10 @@ class VentasListView(LoginRequiredMixin, ListView):
                     data = []
                     position = 1
                     if hasattr(request.user, 'autores'):
-                        libros = Libros.objects.filter(autor=request.user.autores)
+                        libros = Libros.objects.filter(autor_id=request.user.autores.id).only('id')
                         for i in libros:
-                            for j in Ventas.objects.filter(libro=i):
+                            for j in Ventas.objects.filter(libro_id=i.id).only('fecha', 'mercado', 'libro__titulo',
+                                                                               'cantidad', 'precio', 'totales'):
                                 item = j.toJson()
                                 date = month[j.fecha.month - 1] + ' ' + j.fecha.strftime('%Y')
                                 item['fecha_format'] = date  # j.fecha.strftime('%B %Y')
