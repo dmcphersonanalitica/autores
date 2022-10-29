@@ -111,9 +111,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 total_sum = 0
                 for y in years:
                     total = 0
-                    libros = Libros.objects.filter(genero=g)
+                    libros = Libros.objects.filter(genero=g).only('id')
                     for i in libros:
-                        total += Ventas.objects.filter(libro=i, fecha__year=y).aggregate(
+                        total += Ventas.objects.filter(libro_id=i.id, fecha__year=y).only('cantidad').aggregate(
                             c=Coalesce(Sum('cantidad'), 0)).get('c')
                     data_temp.append(total)
                     total_sum += total
@@ -208,7 +208,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if self.request.user.is_superuser:
             #context['graph_five_year'] = self.graph_five_year()
             context['graph_sales_month_last_year_general'] = self.graph_sales_month_last_year_general()
-            #context['graph_gender_five_year'] = self.graph_gender_five_year()
+            context['graph_gender_five_year'] = self.graph_gender_five_year()
         return context
 
 
