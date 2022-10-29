@@ -23,7 +23,6 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 
 
-@cache_page(None)
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
 
