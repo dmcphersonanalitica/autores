@@ -125,28 +125,25 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def count_libros(self):
         if self.request.user.is_superuser:
-            libros = Libros.objects.all().count()
+            libros = Libros.objects.all().only('id').count()
             return libros
 
-        libros = Libros.objects.filter(autor=self.request.user.autores).count()
+        libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id').count()
         return libros
 
     def count_autores(self):
-        autores = Autores.objects.all().count()
+        autores = Autores.objects.all().only('id').count()
         return autores
 
     def count_ventas(self):
         if self.request.user.is_superuser:
-            libros = Libros.objects.all()
-            ventas = 0
-            for i in libros:
-                ventas += Ventas.objects.filter(libro=i).count()
+            ventas = Ventas.objects.all().only('idventas').count()
             return ventas
 
-        libros = Libros.objects.filter(autor=self.request.user.autores)
+        libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
         ventas = 0
         for i in libros:
-            ventas += Ventas.objects.filter(libro=i).count()
+            ventas += Ventas.objects.filter(libro_id=i.id).only('idventas').count()
         return ventas
 
     def last_ventas(self):
@@ -206,7 +203,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             context['graph_five_year'] = self.graph_five_year()
             context['graph_sales_month_last_year'] = self.graph_sales_month_last_year()
         if self.request.user.is_superuser:
-            #context['graph_five_year'] = self.graph_five_year()
+            context['graph_five_year'] = self.graph_five_year()
             context['graph_sales_month_last_year_general'] = self.graph_sales_month_last_year_general()
             context['graph_gender_five_year'] = self.graph_gender_five_year()
         return context
