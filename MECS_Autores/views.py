@@ -30,13 +30,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.graph_five_year()
-            libros = Libros.objects.filter(autor=self.request.user.autores)
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id', 'titulo')
 
             for i in libros:
                 data_value = []
                 for m in year:
                     cantidad = 0
-                    cantidad += Ventas.objects.filter(libro=i, fecha__year=m).aggregate(
+                    cantidad += Ventas.objects.filter(libro_id=i.id, fecha__year=m).aggregate(
                         c=Coalesce(Sum('cantidad'), 0)).get('c')
                     data_value.append(cantidad)
                 data.append([i.titulo, data_value])
@@ -150,18 +150,18 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def last_ventas(self):
         if not self.request.user.is_superuser:
-            libros = Libros.objects.filter(autor=self.request.user.autores)
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
             if len(libros) > 0:
-                last = Ventas.objects.filter(libro=libros.first().id).first().fecha
+                last = Ventas.objects.filter(libro_id=libros.first().id).first().fecha
                 for i in libros:
-                    for j in Ventas.objects.filter(libro=i):
+                    for j in Ventas.objects.filter(libro_id=i.id):
                         if last < j.fecha:
                             last = j.fecha
                 return last
             else:
                 return date.today()
         else:
-            venta = Ventas.objects.all().order_by('fecha').last()
+            venta = Ventas.objects.all().only('fecha').order_by('fecha').last()
             last = venta.fecha
             return last
 
