@@ -25,7 +25,7 @@ from xhtml2pdf import pisa
 VIEW_KEY = ""
 
 
-@cache_page(None)
+#@cache_page(None)
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
 
@@ -213,7 +213,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-@cache_page(None)
+#@cache_page(None)
 class VentasListView(LoginRequiredMixin, ListView):
     model = Ventas
     template_name = "list.html"
@@ -269,7 +269,7 @@ class VentasListView(LoginRequiredMixin, ListView):
         return context
 
 
-@cache_page(None)
+#@cache_page(None)
 class VentasDetailView(LoginRequiredMixin, DetailView):
     model = Ventas
     template_name = "detail.html"
@@ -322,7 +322,7 @@ class VentasDetailView(LoginRequiredMixin, DetailView):
         context['father'] = 'sale'
         return context
 
-@cache_page(None)
+#@cache_page(None)
 class VentasInvoicePdfView(LoginRequiredMixin, View):
     def link_callback(self, uri, rel):
         """
