@@ -25,7 +25,7 @@ from xhtml2pdf import pisa
 timeout = 600
 
 
-@cache_page(timeout)
+@cache_page(None)
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
 
