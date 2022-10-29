@@ -88,7 +88,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             for m in range(1, 13):
                 total = 0
-                total += Ventas.objects.filter(fecha__year=year, fecha__month=m).aggregate(t=Coalesce(
+                total += Ventas.objects.filter(fecha__year=year, fecha__month=m).only('totales').aggregate(t=Coalesce(
                     Sum('totales'), 0, output_field=FloatField())).get('t')
                 porciento = total * float(100) / float(total_general)
                 data.append([month[m - 1], float(porciento)])
@@ -207,7 +207,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             context['graph_sales_month_last_year'] = self.graph_sales_month_last_year()
         #if self.request.user.is_superuser:
             #context['graph_five_year'] = self.graph_five_year()
-            #context['graph_sales_month_last_year_general'] = self.graph_sales_month_last_year_general()
+            context['graph_sales_month_last_year_general'] = self.graph_sales_month_last_year_general()
             #context['graph_gender_five_year'] = self.graph_gender_five_year()
         return context
 
