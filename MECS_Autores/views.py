@@ -58,7 +58,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.last_ventas().year
-            libros = Libros.objects.filter(autor_id=self.request.user.autores_id).only('id')
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
             total_general = self.total_ventas()
             month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
                      'Noviembre', 'Diciembre']
