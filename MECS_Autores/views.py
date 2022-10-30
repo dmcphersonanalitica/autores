@@ -222,15 +222,16 @@ class VentasListView(LoginRequiredMixin, ListView):
                 if request.user.is_superuser:
                     data = []
                     position = 1
-                    ventas = await Ventas.objects.all().order_by('fecha')#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
+                    ventas = Ventas.objects.all().order_by('fecha')#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
-                    async for i in ventas:
-                        item = i.toJson()
-                        date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
-                        item['fecha_format'] = date
-                        item['position'] = position
-                        data.append(item)
-                        position += 1
+                    # for i in ventas:
+                    #     item = i.toJson()
+                    #     date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
+                    #     item['fecha_format'] = date
+                    #     item['position'] = position
+                    #     data.append(item)
+                    #     position += 1
+                    data.append(ventas)
                 else:
                     data = []
                     position = 1
@@ -251,7 +252,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                 data['error'] = '¡Ha ocurrido un error!'
         except Exception as e:
             data['error'] = str(e)
-        return await JsonResponse(data, safe=False)
+        return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
