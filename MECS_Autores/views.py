@@ -20,7 +20,6 @@ import os
 from django.conf import settings
 from django.template.loader import get_template
 from xhtml2pdf import pisa
-import threading
 
 
 month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
@@ -223,9 +222,9 @@ class VentasListView(LoginRequiredMixin, ListView):
                 if request.user.is_superuser:
                     data = []
                     position = 1
-                    ventas = Ventas.objects.all().order_by('fecha')#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
+                    ventas = await Ventas.objects.all().order_by('fecha')#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
-                    for i in ventas:
+                    async for i in ventas:
                         item = i.toJson()
                         date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
                         item['fecha_format'] = date
@@ -253,10 +252,6 @@ class VentasListView(LoginRequiredMixin, ListView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
-
-    threading_List = threading.Thread(target=post, args=())
-
-    threading_List.start()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
