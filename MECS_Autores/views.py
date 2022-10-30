@@ -20,6 +20,7 @@ import os
 from django.conf import settings
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+import threading
 
 
 month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
@@ -252,6 +253,10 @@ class VentasListView(LoginRequiredMixin, ListView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
+
+    threading_List = threading.Thread(target=post, args=())
+
+    threading_List.start()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
