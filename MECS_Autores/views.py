@@ -212,9 +212,13 @@ class VentasListView(LoginRequiredMixin, ListView):
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
+    def setup(self, request, *args, **kwargs):
         global ventas
         ventas = Ventas.objects.all().order_by('fecha')
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
