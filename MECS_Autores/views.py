@@ -251,7 +251,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                 data['error'] = '¡Ha ocurrido un error!'
         except Exception as e:
             data['error'] = str(e)
-        return JsonResponse(data, safe=False)
+        return await JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
