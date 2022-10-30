@@ -205,6 +205,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
+ventas = []
 class VentasListView(LoginRequiredMixin, ListView):
     model = Ventas
     template_name = "list.html"
@@ -212,6 +213,8 @@ class VentasListView(LoginRequiredMixin, ListView):
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        global ventas
+        ventas = Ventas.objects.all().order_by('fecha')
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -220,18 +223,18 @@ class VentasListView(LoginRequiredMixin, ListView):
             action = request.POST['action']
             if action == 'list':
                 if request.user.is_superuser:
+                    global ventas
                     data = []
                     position = 1
-                    ventas = Ventas.objects.all().order_by('fecha')#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
+                    #ventas = Ventas.objects.all().order_by('fecha')#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
-                    # for i in ventas:
-                    #     item = i.toJson()
-                    #     date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
-                    #     item['fecha_format'] = date
-                    #     item['position'] = position
-                    #     data.append(item)
-                    #     position += 1
-                    data.append(ventas)
+                    for i in ventas:
+                        item = i.toJson()
+                        date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
+                        item['fecha_format'] = date
+                        item['position'] = position
+                        data.append(item)
+                        position += 1
                 else:
                     data = []
                     position = 1
