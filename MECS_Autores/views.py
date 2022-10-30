@@ -207,7 +207,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 class VentasListView(LoginRequiredMixin, ListView):
     model = Ventas
-    paginate_by = 25
     template_name = "list.html"
 
     @method_decorator(csrf_exempt)
@@ -223,7 +222,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                 if request.user.is_superuser:
                     data = []
                     position = 1
-                    ventas = Ventas.objects.all()#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
+                    ventas = Ventas.objects.all().order_by('fecha')#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
                     for i in ventas:
                         item = i.toJson()
