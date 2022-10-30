@@ -223,12 +223,12 @@ class VentasListView(LoginRequiredMixin, ListView):
                 if request.user.is_superuser:
                     data = []
                     position = 1
-                    ventas = Ventas.objects.all().select_related('libro')#.only('fecha', 'mercado', 'libro__titulo',
+                    ventas = Ventas.objects.all()#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
                     for i in ventas:
                         item = i.toJson()
                         date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
-                        item['fecha_format'] = date  # i.fecha.strftime('%B %Y')
+                        item['fecha_format'] = date
                         item['position'] = position
                         data.append(item)
                         position += 1
@@ -242,7 +242,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                             for j in ventas:
                                 item = j.toJson()
                                 date = month[j.fecha.month - 1] + ' ' + j.fecha.strftime('%Y')
-                                item['fecha_format'] = date  # j.fecha.strftime('%B %Y')
+                                item['fecha_format'] = date
                                 data.append(item)
                         data = sorted(data, key=lambda venta: venta['fecha'])
                         for d in data:
