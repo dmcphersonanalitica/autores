@@ -205,16 +205,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-ventas = []
 class VentasListView(LoginRequiredMixin, ListView):
     model = Ventas
     template_name = "list.html"
-
-    @method_decorator(csrf_exempt)
-    @method_decorator(login_required)
-    def setup(self, request, *args, **kwargs):
-        global ventas
-        ventas = Ventas.objects.all().order_by('fecha')
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -227,10 +220,9 @@ class VentasListView(LoginRequiredMixin, ListView):
             action = request.POST['action']
             if action == 'list':
                 if request.user.is_superuser:
-                    global ventas
                     data = []
                     position = 1
-                    #ventas = Ventas.objects.all().order_by('fecha')#.select_related('libro').only('fecha', 'mercado', 'libro__titulo',
+                    ventas = Ventas.objects.all().iterator()#order_by('fecha').select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
                     for i in ventas:
                         item = i.toJson()
