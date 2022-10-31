@@ -219,21 +219,16 @@ class VentasListView(LoginRequiredMixin, ListView):
         try:
             action = request.POST['action']
             if action == 'list':
+                position = 1
                 if request.user.is_superuser:
-                    data = []
-                    position = 1
                     ventas = Ventas.objects.only('idventas', 'fecha').all() #order_by('fecha').select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
                     for i in ventas:
                         item = i.toJson()
                         date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
                         item['fecha_format'] = date
-                        item['position'] = position
                         data.append(item)
-                        position += 1
                 else:
-                    data = []
-                    position = 1
                     if hasattr(request.user, 'autores'):
                         libros = Libros.objects.filter(autor_id=request.user.autores.id)#.only('id')
                         for i in libros:
@@ -244,9 +239,9 @@ class VentasListView(LoginRequiredMixin, ListView):
                                 item['fecha_format'] = date
                                 data.append(item)
                         data = sorted(data, key=lambda venta: venta['fecha'])
-                        for d in data:
-                            d['position'] = position
-                            position += 1
+                for d in data:
+                    d['position'] = position
+                    position += 1
             else:
                 data['error'] = '¡Ha ocurrido un error!'
         except Exception as e:
