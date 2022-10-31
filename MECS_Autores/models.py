@@ -39,6 +39,7 @@ class Autores(models.Model):
         verbose_name_plural = "Autores"
         db_table = 'autores'
         ordering = ["id"]
+        indexes = [models.Index(fields=['id', 'nombre', 'user', 'correo'])]
 
 
 class Libros(models.Model):
@@ -97,6 +98,7 @@ class Libros(models.Model):
         verbose_name_plural = "Libros"
         db_table = 'libros'
         ordering = ["id"]
+        indexes = [models.Index(fields=['id', 'titulo', 'genero', 'autor'])]
 
 
 class Ventas(models.Model):
@@ -142,4 +144,4 @@ class Ventas(models.Model):
         verbose_name_plural = "Ventas"
         db_table = 'ventas'
         ordering = ["fecha"]
-        indexes = [models.Index(fields=['idventas', 'fecha'])]
+        indexes = [models.Index(fields=['idventas', 'fecha', 'libro'])]
