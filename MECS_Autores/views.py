@@ -222,6 +222,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                 if request.user.is_superuser:
                     data = []
                     position = 1
+                    print(Ventas.objects.all())
                     ventas = Ventas.objects.all().iterator()#order_by('fecha').select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
                     for i in ventas:
