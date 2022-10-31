@@ -215,7 +215,7 @@ class VentasListView(LoginRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        data = {}
+        data = []
         try:
             action = request.POST['action']
             if action == 'list':
