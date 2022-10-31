@@ -222,7 +222,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                 if request.user.is_superuser:
                     data = []
                     position = 1
-                    ventas = Ventas.objects.only('id', 'fecha').all() #order_by('fecha').select_related('libro').only('fecha', 'mercado', 'libro__titulo',
+                    ventas = Ventas.objects.only('idventas', 'fecha').all() #order_by('fecha').select_related('libro').only('fecha', 'mercado', 'libro__titulo',
                                                                                #'cantidad', 'precio', 'totales').order_by('fecha')
                     for i in ventas:
                         item = i.toJson()
