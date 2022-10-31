@@ -120,21 +120,8 @@ class Ventas(models.Model):
     def __str__(self):
         return self.fecha.__str__() + " --- " + self.libro.titulo
 
-    def Cobrado(self):
-        if self.cobrado == 1:
-            return "Si"
-        return "No"
-
-    def Reporte(self):
-        if self.reporte == 1:
-            return "Si"
-        return "No"
-
     def toJson(self):
         item = model_to_dict(self)
-        #item['fecha'] = self.fecha.strftime('%B %Y')
-        item['cobrado'] = self.Cobrado()
-        item['reporte'] = self.Reporte()
         item['libro'] = self.libro.titulo
         return item
 
