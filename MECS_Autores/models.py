@@ -142,3 +142,4 @@ class Ventas(models.Model):
         verbose_name_plural = "Ventas"
         db_table = 'ventas'
         ordering = ["fecha"]
+        indexes = [models.Index(fields=['idventas', 'fecha'])]
