@@ -120,7 +120,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             data = sorted(data, key=lambda gender: gender[2], reverse=True)
         except Exception as e:
             pass
-        return data[:3]
+        return data
 
     def count_libros(self):
         if self.request.user.is_superuser:
