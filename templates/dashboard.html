@@ -1,6 +1,5 @@
 {% extends "home.html" %}
 {% load static %}
-{% load cache %}
 
 {% block head %}
     <script src="{% static "../static/lib/highcharts-8.1.2/highcharts.js" %}"></script>
@@ -179,21 +178,17 @@
             series: [
                 {% if not request.user.is_superuser %}
                     {% for g in graph_sales_five_year %}
-                        {% cache None 'graph' %}
                             {
                                 name: {{ g | safe }}[0],
                                 data: {{ g | safe}}[1]
                             },
-                        {% endcache %}
                     {% endfor %}
                 {% else %}
                     {% for g in graph_gender_five_year %}
-                        {% cache None 'graph1' %}
                             {
                                 name: {{ g | safe }}[0],
                                 data: {{ g | safe}}[1]
                             },
-                        {% endcache %}
                     {% endfor %}
                 {% endif %}
             ]
@@ -248,21 +243,17 @@
                 data: [
                     {% if not request.user.is_superuser %}
                         {% for g in graph_sales_month_last_year %}
-                            {% cache None 'graph' g %}
                                 {
                                     name: {{ g | safe}}[0],
                                     y: {{ g | safe}}[1]
                                 },
-                            {% endcache %}
                         {% endfor %}
                     {% else %}
                         {% for g in graph_sales_month_last_year_general %}
-                            {% cache None 'graph' g %}
                                 {
                                     name: {{ g | safe}}[0],
                                     y: {{ g | safe}}[1]
                                 },
-                            {% endcache %}
                         {% endfor %}
                     {% endif %}
                 ]
