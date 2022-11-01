@@ -121,8 +121,8 @@ class Ventas(models.Model):
         return self.fecha.__str__() + " --- " + self.libro.titulo
 
     def toJson(self):
-        item = model_to_dict(self)
-        item['libro'] = self.libro.titulo
+        item = model_to_dict(self, fields=['mercado', 'cantidad', 'precio', 'totales'])
+        #item['libro'] = self.libro.titulo
         return item
 
     class Meta:
