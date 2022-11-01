@@ -224,7 +224,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                     ventas = Ventas.objects.all().select_related('libro')
                     for i in ventas:
                         item = i.toJson()
-                        item['libro'] = i.libro__titulo
+                        item['libro'] = i.libro.titulo
                         date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
                         item['fecha_format'] = date
                         data.append(item)
