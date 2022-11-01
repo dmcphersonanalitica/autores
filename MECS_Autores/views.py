@@ -33,7 +33,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.graph_five_year()
-            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id', 'titulo')
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id', 'titulo').select_related('autor')
 
             for i in libros:
                 data_value = []
@@ -61,7 +61,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.last_ventas().year
-            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id').select_related('autor')
             total_general = self.total_ventas()
 
             if len(libros) > 0:
@@ -201,7 +201,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if self.request.user.is_superuser:
             context['graph_five_year'] = self.graph_five_year()
             context['graph_sales_month_last_year_general'] = self.graph_sales_month_last_year_general()
-            #context['graph_gender_five_year'] = self.graph_gender_five_year()
+            context['graph_gender_five_year'] = self.graph_gender_five_year()
         return context
 
 
@@ -257,7 +257,6 @@ class VentasListView(LoginRequiredMixin, ListView):
         return context
 
 
-#@cache_page(None)
 class VentasDetailView(LoginRequiredMixin, DetailView):
     model = Ventas
     template_name = "detail.html"
@@ -310,7 +309,7 @@ class VentasDetailView(LoginRequiredMixin, DetailView):
         context['father'] = 'sale'
         return context
 
-#@cache_page(None)
+
 class VentasInvoicePdfView(LoginRequiredMixin, View):
     def link_callback(self, uri, rel):
         """
@@ -340,13 +339,13 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         try:
-            sale = Ventas.objects.get(pk=self.kwargs['pk'])
+            sale = Ventas.objects.get(pk=self.kwargs['pk']).select_related('libro')
             id = sale.libro.autor.user.id
 
             if self.request.user.id == id or self.request.user.is_superuser:
                 template = get_template('invoice.html')
                 xciento = sale.libro.xciento * sale.totales / 100
-                sales = Ventas.objects.filter(libro=sale.libro)
+                sales = Ventas.objects.filter(libro__id=sale.libro.id).select_related('libro')
                 monto = 0
                 for sal in sales:
                     monto += round(sal.libro.xciento * sal.totales / 100, 2)
@@ -383,7 +382,7 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        sale = Ventas.objects.get(pk=kwargs['pk'])
+        sale = Ventas.objects.get(pk=kwargs['pk']).select_related('libro')
         to = sale.libro.autor.correo
         month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
                  'Noviembre', 'Diciembre']
@@ -428,10 +427,10 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
 
     def Invoice_PDF(self, id):
         try:
-            sale = Ventas.objects.get(pk=id)
+            sale = Ventas.objects.get(pk=id).select_related('libro')
             template = get_template('invoice.html')
             xciento = sale.libro.xciento * sale.totales / 100
-            sales = Ventas.objects.filter(libro=sale.libro)
+            sales = Ventas.objects.filter(libro__id=sale.libro.id).select_related('libro')
             monto = 0
             for sal in sales:
                 monto += round(sal.libro.xciento * sal.totales / 100, 2)
