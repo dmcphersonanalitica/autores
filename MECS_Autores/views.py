@@ -98,7 +98,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def graph_gender_general(self):
         generos = Libros.objects.order_by('genero').values_list('genero', flat=True).distinct()
 
-        return generos
+        return generos[:3]
 
     def graph_gender_five_year(self):
         try:
