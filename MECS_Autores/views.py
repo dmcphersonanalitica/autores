@@ -110,7 +110,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 total_sum = 0
                 for y in years:
                     total = 0
-                    libros = Libros.objects.filter(genero=g).only('id')
+                    libros = Libros.objects.filter(genero=g)#.only('id')
                     for i in libros:
                         total += Ventas.objects.filter(libro_id=i.id, fecha__year=y).only('cantidad').aggregate(
                             c=Coalesce(Sum('cantidad'), 0)).get('c')
