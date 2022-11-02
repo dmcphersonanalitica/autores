@@ -435,14 +435,14 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
             adeudo = sale.libro.anticipo - monto
             context = {
                 'sale': sale,
-                'logo': '{}{}'.format(settings.STATIC_ROOT, 'image/1.png'),
-                'confirm': '{}{}'.format(settings.STATIC_ROOT, 'image/2.png'),
+                'logo': '{}{}'.format(settings.STATIC_URL, 'image/1.png'),
+                'confirm': '{}{}'.format(settings.STATIC_URL, 'image/2.png'),
                 'xciento': xciento,
                 'adeudo': adeudo
             }
             html = template.render(context)
 
-            outputFilename = '{}{}'.format(settings.STATIC_ROOT, 'pdf/Reporte de venta.pdf')
+            outputFilename = '{}{}'.format(settings.STATIC_URL, 'pdf/Reporte de venta.pdf')
             resultFile = open(outputFilename, "w+b")
             pisa.CreatePDF(html, dest=resultFile)
             resultFile.close()
