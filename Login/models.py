@@ -51,7 +51,7 @@ class User(AbstractUser):
         else:
             if action != 'list':
                 item['image'] = '{}{}'.format(STATIC_URL, 'image/Author.jpg')
-            item['full_name'] = ''
+            item['full_name'] = self.get_full_name()
         return item
 
     class Meta:
