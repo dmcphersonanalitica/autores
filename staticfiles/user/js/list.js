@@ -16,7 +16,7 @@ $(function () {
             {"data": "position"},
             {"data": "full_name"},
             {"data": "username"},
-            {"data": "date_joined"},
+            {"data": "email"},
             {"data": "last_login"},
             {"data": "assigned"},
         ],

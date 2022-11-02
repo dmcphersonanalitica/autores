@@ -56,19 +56,20 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
             if action == 'list':
                 data = []
                 position = 1
-                users = User.objects.all().select_related('autores')
+                users = User.objects.all()#.select_related('autores')
                 for i in users:#.select_related('autores'):
-                    item = {}
-                    #item = i.toJson()
-                    item['id'] = i.id
-                    item['username'] = i.username
-                    item['full_name'] = i.first_name + ' ' + i.last_name#.get_full_name()
-                    if hasattr(i, 'autores'):
-                        if i.autores is not None:
-                            item['email'] = i.autores.correo
-                    else:
-                        item['email'] = ''
+                    #item = {}
+                    item = i.toJson()
+                    # item['id'] = i.id
+                    # item['username'] = i.username
+                    # item['full_name'] = i.first_name + ' ' + i.last_name#.get_full_name()
+                    # if hasattr(i, 'autores'):
+                    #     if i.autores is not None:
+                    #         item['email'] = i.autores.correo
+                    # else:
+                    #     item['email'] = ''
                     #item['email'] = i.autores.correo
+                    item['full_name'] = i.first_name + ' ' + i.last_name
                     if i.last_login:
                         item['last_login'] = i.last_login.strftime('%Y-%m-%d')
                     else:

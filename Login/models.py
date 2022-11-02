@@ -38,11 +38,11 @@ class User(AbstractUser):
         return '{}{}'.format(STATIC_URL, 'image/Author.jpg')
 
     def toJson(self):
-        item = model_to_dict(self, exclude=['password', 'last_login'])
-        if self.last_login:
-            item['last_login'] = self.last_login.strftime('%Y-%m-%d')
-        else:
-            item['last_login'] = ''
+        item = model_to_dict(self, fields=['id', 'username', 'email'])
+        # if self.last_login:
+        #     item['last_login'] = self.last_login.strftime('%Y-%m-%d')
+        # else:
+        #     item['last_login'] = ''
         #item['date_joined'] = self.date_joined.strftime('%Y-%m-%d')
         return item
 
@@ -51,4 +51,4 @@ class User(AbstractUser):
         verbose_name_plural = 'Usuarios'
         db_table = 'Login_user'
         ordering = ["id"]
-        indexes = [models.Index(fields=['id', 'email'])]
+        indexes = [models.Index(fields=['id', 'username', 'email'])]
