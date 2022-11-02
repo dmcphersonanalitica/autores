@@ -21,9 +21,8 @@ from django.conf import settings
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
-
 month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
-                     'Noviembre', 'Diciembre']
+         'Noviembre', 'Diciembre']
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -33,7 +32,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.graph_five_year()
-            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id', 'titulo').select_related('autor')
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id', 'titulo').select_related(
+                'autor')
 
             for i in libros:
                 data_value = []
@@ -68,7 +68,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 for m in range(1, 13):
                     total = 0
                     for i in libros:
-                        total += Ventas.objects.filter(libro_id=i.id, fecha__year=year, fecha__month=m).only('totales').aggregate(t=Coalesce(
+                        total += Ventas.objects.filter(libro_id=i.id, fecha__year=year, fecha__month=m).only(
+                            'totales').aggregate(t=Coalesce(
                             Sum('totales'), 0, output_field=FloatField())).get('t')
                     if total > 0:
                         porciento = total * float(100) / float(total_general)
@@ -359,7 +360,7 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
                 response = HttpResponse(content_type='application/pdf')
                 response[
                     'Content-Disposition'] = 'attachment; filename="' + sale.libro.titulo + ' -- ' + sale.fecha.strftime(
-                   '%B %Y') + '.pdf"'
+                    '%B %Y') + '.pdf"'
                 pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
                 return response
             else:
@@ -424,31 +425,28 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         return JsonResponse(data)
 
     def Invoice_PDF(self, id):
-        try:
-            sale = Ventas.objects.get(pk=id)
-            template = get_template('invoice.html')
-            xciento = sale.libro.xciento * sale.totales / 100
-            sales = Ventas.objects.filter(libro__id=sale.libro.id).select_related('libro')
-            monto = 0
-            for sal in sales:
-                monto += round(sal.libro.xciento * sal.totales / 100, 2)
-            adeudo = sale.libro.anticipo - monto
-            context = {
-                'sale': sale,
-                'logo': '{}{}'.format(settings.STATIC_URL, 'image/1.png'),
-                'confirm': '{}{}'.format(settings.STATIC_URL, 'image/2.png'),
-                'xciento': xciento,
-                'adeudo': adeudo
-            }
-            html = template.render(context)
+        sale = Ventas.objects.get(pk=id)
+        template = get_template('invoice.html')
+        xciento = sale.libro.xciento * sale.totales / 100
+        sales = Ventas.objects.filter(libro__id=sale.libro.id).select_related('libro')
+        monto = 0
+        for sal in sales:
+            monto += round(sal.libro.xciento * sal.totales / 100, 2)
+        adeudo = sale.libro.anticipo - monto
+        context = {
+            'sale': sale,
+            'logo': '{}{}'.format(settings.STATIC_URL, 'image/1.png'),
+            'confirm': '{}{}'.format(settings.STATIC_URL, 'image/2.png'),
+            'xciento': xciento,
+            'adeudo': adeudo
+        }
+        html = template.render(context)
 
-            outputFilename = '{}{}'.format(settings.STATIC_URL, 'pdf/Reporte de venta.pdf')
-            resultFile = open(outputFilename, "w+b")
-            pisa.CreatePDF(html, dest=resultFile)
-            resultFile.close()
-            return outputFilename
-        except Exception as ex:
-            print(ex)
+        outputFilename = '{}{}'.format(settings.STATIC_URL, 'pdf/Reporte de venta.pdf')
+        resultFile = open(outputFilename, "w+b")
+        pisa.CreatePDF(html, dest=resultFile)
+        resultFile.close()
+        return outputFilename
 
 
 # 404: página no encontrada
