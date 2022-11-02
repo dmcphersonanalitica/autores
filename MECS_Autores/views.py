@@ -103,24 +103,19 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def graph_gender_five_year(self):
         try:
             data = []
-            data_final = []
             years = self.graph_five_year()
             generos = self.graph_gender_general()
             for g in generos:
                 data_temp = []
                 total_sum = 0
-                #libros = Libros.objects.filter(genero=g)  # .only('id')
                 for y in years:
                     total = 0
-                    #for i in libros:
-                    total += Ventas.objects.filter(libro__genero=g, fecha__year=y).aggregate(#.only('cantidad').aggregate(
+                    total += Ventas.objects.filter(libro__genero=g, fecha__year=y).aggregate(
                         c=Coalesce(Sum('cantidad'), 0)).get('c')
                     data_temp.append(total)
                     total_sum += total
                 data.append([g, data_temp, total_sum])
             data = sorted(data, key=lambda gender: gender[2], reverse=True)
-            #for d in data:
-                #data_final.append(d)
         except Exception as e:
             pass
         return data[:3]
