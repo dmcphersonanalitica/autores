@@ -109,9 +109,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             for g in generos:
                 data_temp = []
                 total_sum = 0
+                libros = Libros.objects.filter(genero=g)  # .only('id')
                 for y in years:
                     total = 0
-                    libros = Libros.objects.filter(genero=g)#.only('id')
                     for i in libros:
                         total += Ventas.objects.filter(libro_id=i.id, fecha__year=y).aggregate(#.only('cantidad').aggregate(
                             c=Coalesce(Sum('cantidad'), 0)).get('c')
@@ -119,11 +119,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     total_sum += total
                 data.append([g, data_temp, total_sum])
             data = sorted(data, key=lambda gender: gender[2], reverse=True)
-            for d in data:
-                data_final.append(d)
+            #for d in data:
+                #data_final.append(d)
         except Exception as e:
             pass
-        return data_final
+        return data[:3]
 
     def count_libros(self):
         if self.request.user.is_superuser:
