@@ -43,15 +43,15 @@ class User(AbstractUser):
         else:
             item['last_login'] = ''
         item['date_joined'] = self.date_joined.strftime('%Y-%m-%d')
-        if hasattr(self, 'autores'):
-            if self.autores is not None:
-                if action != 'list':
-                    item['image'] = self.get_author_image()
-                #item['full_name'] = self.autores.__str__()
-        else:
-            if action != 'list':
-                item['image'] = '{}{}'.format(STATIC_URL, 'image/Author.jpg')
-            item['full_name'] = self.get_full_name()
+        # if hasattr(self, 'autores'):
+        #     if self.autores is not None:
+        #         if action != 'list':
+        #             item['image'] = self.get_author_image()
+        #         item['full_name'] = self.autores.__str__()
+        # else:
+        #     if action != 'list':
+        #         item['image'] = '{}{}'.format(STATIC_URL, 'image/Author.jpg')
+        #     item['full_name'] = self.get_full_name()
         return item
 
     class Meta:

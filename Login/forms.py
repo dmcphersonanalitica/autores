@@ -27,9 +27,9 @@ class UserForm(ModelForm):
                     if user.password != pwd:
                         u.set_password(pwd)
                 u.save()
-                at = Autores.objects.filter(user=u.id)
+                at = Autores.objects.filter(user_id=u.id)
                 if len(at) > 0:
-                    a = Autores.objects.get(user=u.id)
+                    a = Autores.objects.get(user_id=u.id)
                     a.correo = self.cleaned_data['email']
                     a.save()
             else:
@@ -83,9 +83,9 @@ class UserProfileForm(ModelForm):
             if form.is_valid():
                 u = form.save(commit=False)
                 u.save()
-                at = Autores.objects.filter(user=u.id)
+                at = Autores.objects.filter(user_id=u.id)
                 if len(at) > 0:
-                    a = Autores.objects.get(user=u.id)
+                    a = Autores.objects.get(user_id=u.id)
                     a.correo = self.cleaned_data['email']
                     a.save()
             else:
