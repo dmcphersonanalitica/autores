@@ -57,8 +57,12 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
                 data = []
                 position = 1
                 for i in User.objects.all().select_related('autores'):
-                    item['full_name'] = i.autores.__str__()
                     item = i.toJson(action)
+                    if hasattr(i, 'autores'):
+                        if i.autores is not None:
+                            item['full_name'] = i.autores.__str__()
+                    else:
+                        item['full_name'] = ''
                     item['position'] = position
                     data.append(item)
                     position += 1
