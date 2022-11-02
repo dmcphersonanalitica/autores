@@ -337,7 +337,7 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         try:
-            sale = Ventas.objects.get(pk=self.kwargs['pk']).select_related('libro')
+            sale = Ventas.objects.get(pk=self.kwargs['pk'])
             id = sale.libro.autor.user.id
 
             if self.request.user.id == id or self.request.user.is_superuser:
@@ -357,9 +357,9 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
                 }
                 html = template.render(context)
                 response = HttpResponse(content_type='application/pdf')
-                #response[
-                #    'Content-Disposition'] = 'attachment; filename="' + sale.libro.titulo + ' -- ' + sale.fecha.strftime(
-                #   '%B %Y') + '.pdf"'
+                response[
+                    'Content-Disposition'] = 'attachment; filename="' + sale.libro.titulo + ' -- ' + sale.fecha.strftime(
+                   '%B %Y') + '.pdf"'
                 pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
                 return response
             else:
@@ -380,7 +380,7 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        sale = Ventas.objects.get(pk=kwargs['pk']).select_related('libro')
+        sale = Ventas.objects.get(pk=kwargs['pk'])
         to = sale.libro.autor.correo
         month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
                  'Noviembre', 'Diciembre']
@@ -425,7 +425,7 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
 
     def Invoice_PDF(self, id):
         try:
-            sale = Ventas.objects.get(pk=id).select_related('libro')
+            sale = Ventas.objects.get(pk=id)
             template = get_template('invoice.html')
             xciento = sale.libro.xciento * sale.totales / 100
             sales = Ventas.objects.filter(libro__id=sale.libro.id).select_related('libro')
