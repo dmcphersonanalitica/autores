@@ -71,6 +71,7 @@
                     location.href = data.listUrl;
                     return false;
                 }
+                alert(data.error)
                 errors = '<ul style="text-align: left">';
                                 $.each(data.error, function (key, value) {
                                     errors += '<li>' + value + '</li>';
