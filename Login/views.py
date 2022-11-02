@@ -64,6 +64,7 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
                     #         item['full_name'] = i.autores.__str__()
                     # else:
                     item['full_name'] = i.first_name + ' ' + i.last_name#.get_full_name()
+                    item['email'] = i.email
                     item['position'] = position
                     data.append(item)
                     position += 1
