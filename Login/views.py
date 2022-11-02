@@ -60,12 +60,12 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
                 for i in users:#.select_related('autores'):
                     item = []
                     #item = i.toJson()
+                    item['full_name'] = i.first_name + ' ' + i.last_name#.get_full_name()
                     if hasattr(i, 'autores'):
                         if i.autores is not None:
                             item['email'] = i.autores.correo
                     else:
                         item['email'] = ''
-                    item['full_name'] = i.first_name + ' ' + i.last_name#.get_full_name()
                     #item['email'] = i.autores.correo
                     if i.last_login:
                         item['last_login'] = i.last_login.strftime('%Y-%m-%d')
