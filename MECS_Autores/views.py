@@ -357,9 +357,9 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
                 }
                 html = template.render(context)
                 response = HttpResponse(content_type='application/pdf')
-                response[
-                    'Content-Disposition'] = 'attachment; filename="' + sale.libro.titulo + ' -- ' + sale.fecha.strftime(
-                    '%B %Y') + '.pdf"'
+                #response[
+                #    'Content-Disposition'] = 'attachment; filename="' + sale.libro.titulo + ' -- ' + sale.fecha.strftime(
+                #   '%B %Y') + '.pdf"'
                 pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
                 return response
             else:
