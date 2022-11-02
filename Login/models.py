@@ -43,7 +43,7 @@ class User(AbstractUser):
             item['last_login'] = self.last_login.strftime('%Y-%m-%d')
         else:
             item['last_login'] = ''
-        item['date_joined'] = self.date_joined.strftime('%Y-%m-%d')
+        #item['date_joined'] = self.date_joined.strftime('%Y-%m-%d')
         return item
 
     class Meta:

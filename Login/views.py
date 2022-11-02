@@ -63,7 +63,7 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
                     #     if i.autores is not None:
                     #         item['full_name'] = i.autores.__str__()
                     # else:
-                    item['full_name'] = i.get_full_name()
+                    item['full_name'] = i.first_name + ' ' + i.last_name#.get_full_name()
                     item['position'] = position
                     data.append(item)
                     position += 1
