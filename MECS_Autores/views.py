@@ -448,7 +448,7 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
             resultFile.close()
             return outputFilename
         except Exception as ex:
-            pass
+            print(ex)
 
 
 # 404: página no encontrada
