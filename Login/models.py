@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.forms import model_to_dict
 from core.settings import STATIC_URL
 import requests
@@ -48,4 +49,6 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
-        ordering = ['id']
+        db_table = 'login_user'
+        ordering = ["id"]
+        indexes = [models.Index(fields=['id', 'email'])]
