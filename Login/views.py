@@ -60,6 +60,7 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
                 for i in users:#.select_related('autores'):
                     item = {}
                     #item = i.toJson()
+                    item['id'] = i.id
                     item['username'] = i.username
                     item['full_name'] = i.first_name + ' ' + i.last_name#.get_full_name()
                     if hasattr(i, 'autores'):
