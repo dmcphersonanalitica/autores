@@ -56,7 +56,7 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
             if action == 'list':
                 data = []
                 position = 1
-                users = User.objects.all()
+                users = User.objects.all().select_related('autores')
                 for i in users:#.select_related('autores'):
                     item = i.toJson()
                     # if hasattr(i, 'autores'):
@@ -64,7 +64,7 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
                     #         item['full_name'] = i.autores.__str__()
                     # else:
                     item['full_name'] = i.first_name + ' ' + i.last_name#.get_full_name()
-                    item['email'] = i.email
+                    item['email'] = i.autores.correo
                     item['position'] = position
                     data.append(item)
                     position += 1
