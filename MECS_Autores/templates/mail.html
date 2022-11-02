@@ -71,7 +71,44 @@
                     location.href = data.listUrl;
                     return false;
                 }
-                message_error(data.error);
+                errors = '<ul style="text-align: left">';
+                                $.each(data.error, function (key, value) {
+                                    errors += '<li>' + value + '</li>';
+                                });
+                                errors += '</ul>';
+                                $.confirm({
+                                    theme: 'material',
+                                    title: 'MECS-Error',
+                                    icon: 'fa fa-ban',
+                                    content: errors,
+                                    columnClass: 'medium',
+                                    type: 'red',
+                                    typeAnimated: true,
+                                    cancelButtonClass: 'btn-primary',
+                                    draggable: true,
+                                    dragWindowBorder: false,
+                                    buttons: {
+                                        info: {
+                                            text: "Aceptar",
+                                            btnClass: 'btn-primary',
+                                            action: function () {
+                                                if ('{{ father }}' === 'usuario') {
+                                                    $.ajax({
+                                                        url: window.location.pathname,
+                                                        type: 'POST',
+                                                        data: parameters,
+                                                        dataType: 'json',
+                                                        processData: false,
+                                                        contentType: false
+                                                    }).done(function () {
+                                                        return false;
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                //message_error(data.error);
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 alert(textStatus + ': ' + errorThrown);
             }).always(function (data) {
