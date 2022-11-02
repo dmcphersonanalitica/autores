@@ -56,7 +56,8 @@ class UserListView(LoginRequiredMixin, IsSuperuserMixin, ListView):
             if action == 'list':
                 data = []
                 position = 1
-                for i in User.objects.all().order_by('id'):
+                for i in User.objects.all().select_related('autores'):
+                    item['full_name'] = i.autores.__str__()
                     item = i.toJson(action)
                     item['position'] = position
                     data.append(item)

@@ -47,7 +47,7 @@ class User(AbstractUser):
             if self.autores is not None:
                 if action != 'list':
                     item['image'] = self.get_author_image()
-                item['full_name'] = self.autores.__str__()
+                #item['full_name'] = self.autores.__str__()
         else:
             if action != 'list':
                 item['image'] = '{}{}'.format(STATIC_URL, 'image/Author.jpg')
