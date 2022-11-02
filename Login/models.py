@@ -49,6 +49,6 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
-        db_table = 'login_user'
+        db_table = 'Login_user'
         ordering = ["id"]
         indexes = [models.Index(fields=['id', 'email'])]
