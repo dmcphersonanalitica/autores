@@ -7,7 +7,6 @@ $(function () {
         ajax: {
             url: window.location.pathname,
             type: 'POST',
-            timeout: 60000,
             data: {
                 'action': 'list'
             }, // parametros
