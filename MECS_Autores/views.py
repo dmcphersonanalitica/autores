@@ -441,7 +441,7 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         }
         html = template.render(context)
 
-        outputFilename = '{}{}'.format(settings.STATIC_ROOT, 'pdf/Reporte de venta.pdf')
+        outputFilename = '{}{}'.format(settings.STATIC_ROOT, '/pdf/Reporte de venta.pdf')
         resultFile = open(outputFilename, "w+b")
         pisa.CreatePDF(html, dest=resultFile)
         resultFile.close()
