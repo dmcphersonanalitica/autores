@@ -197,10 +197,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             context['total'] = 0
         context['writer'] = self.count_autores()
         if not self.request.user.is_superuser and hasattr(self.request.user, 'autores') and self.count_ventas() > 0:
-            context['last_sale'] = self.last_ventas()
+            #context['last_sale'] = self.last_ventas()
             context['sales_libros'] = self.count_libros_ventas()
-        else:
-            context['last_sale'] = '---'
+        #else:
+        #context['last_sale'] = '---'
+        context['last_sale'] = self.last_ventas()
         context['father'] = 'dashboard'
         if hasattr(self.request.user, 'autores'):
             context['graph_sales_five_year'] = self.graph_sales_five_year()
