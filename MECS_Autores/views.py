@@ -32,8 +32,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.graph_five_year()
-            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id', 'titulo').select_related(
-                'autor')
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id)#.only('id', 'titulo')
 
             for i in libros:
                 data_value = []
