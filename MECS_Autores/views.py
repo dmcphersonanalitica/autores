@@ -60,7 +60,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.last_ventas().year
-            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id').select_related('autor')
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id)#.only('id')
             total_general = self.total_ventas()
 
             if len(libros) > 0:
