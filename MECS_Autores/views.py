@@ -412,7 +412,7 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         # make sure that file exists
         if not os.path.isfile(path):
             raise Exception(
-                path + 'media URI must start with %s or %s' % (sUrl, mUrl)
+                path + ' -- ' + uri + 'media URI must start with %s or %s' % (sUrl, mUrl)
             )
         return path
 
