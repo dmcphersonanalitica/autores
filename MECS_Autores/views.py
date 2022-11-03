@@ -390,6 +390,32 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+    def link_callback(self, uri, rel):
+        """
+        Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+        resources
+        """
+        # use short variable names
+        sUrl = settings.STATIC_URL  # Typically /static/
+        sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_static/
+        mUrl = settings.MEDIA_URL  # Typically /static/media/
+        mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
+
+        # convert URIs to absolute system paths
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri  # handle absolute uri (ie: http://some.tld/foo.png)
+
+        # make sure that file exists
+        if not os.path.isfile(path):
+            raise Exception(
+                'media URI must start with %s or %s' % (sUrl, mUrl)
+            )
+        return path
+
     def get(self, request, *args, **kwargs):
         sale = Ventas.objects.get(pk=kwargs['pk'])
         to = sale.libro.autor.correo
@@ -445,8 +471,8 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         adeudo = sale.libro.anticipo - monto
         context = {
             'sale': sale,
-            'logo': '{}{}'.format(settings.STATIC_ROOT, '/image/1.png'),
-            'confirm': '{}{}'.format(settings.STATIC_ROOT, '/image/2.png'),
+            'logo': '{}{}'.format(settings.STATIC_URL, '/image/1.png'),
+            'confirm': '{}{}'.format(settings.STATIC_URL, '/image/2.png'),
             'xciento': xciento,
             'adeudo': adeudo
         }
@@ -454,7 +480,7 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
 
         outputFilename = '{}{}'.format(settings.STATIC_ROOT, '/pdf/Reporte de venta.pdf')
         resultFile = open(outputFilename, "w+b")
-        pisa.CreatePDF(html, dest=resultFile)
+        pisa.CreatePDF(html, dest=resultFile, link_callback=self.link_callback)
         resultFile.close()
         return outputFilename
 
