@@ -230,7 +230,7 @@
                 text: 'Porciento de venta mensual'
             },
             subtitle: {
-                text: 'Año de la última fecha de venta'
+                text: 'Año de la última fecha de venta (' + {{ last_sale|date:'Y' }} + ')'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
