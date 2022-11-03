@@ -32,7 +32,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.graph_five_year()
-            libros = Libros.objects.filter(autor_id=self.request.user.autores.id)#.only('id', 'titulo')
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id)
 
             for i in libros:
                 data_value = []
@@ -60,7 +60,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         try:
             data = []
             year = self.last_ventas().year
-            libros = Libros.objects.filter(autor_id=self.request.user.autores.id)#.only('id')
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id)
             total_general = self.total_ventas()
 
             if len(libros) > 0:
