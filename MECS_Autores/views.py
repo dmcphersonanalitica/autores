@@ -143,6 +143,15 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             ventas += Ventas.objects.filter(libro_id=i.id).only('idventas').count()
         return ventas
 
+    def count_libros_ventas(self):
+        if not self.request.user.is_superuser:
+            libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
+            total = 0
+            for i in libros:
+                total += Ventas.objects.filter(libro_id=i.id).aggregate(
+                    c=Coalesce(Sum('cantidad'), 0)).get('c')
+        return total
+
     def last_ventas(self):
         if not self.request.user.is_superuser:
             libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
@@ -189,6 +198,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context['writer'] = self.count_autores()
         if not self.request.user.is_superuser and hasattr(self.request.user, 'autores') and self.count_ventas() > 0:
             context['last_sale'] = self.last_ventas()
+            context['sales_libros'] = self.count_libros_ventas()
         else:
             context['last_sale'] = '---'
         context['father'] = 'dashboard'

@@ -149,7 +149,7 @@ AUTH_USER_MODEL = 'Login.User'
 
 # Email
 ANYMAIL = {
-    "SENDINBLUE_API_KEY": "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",
+    "SENDINBLUE_API_KEY": "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",
 }
 
 EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
