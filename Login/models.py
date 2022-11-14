@@ -39,11 +39,6 @@ class User(AbstractUser):
 
     def toJson(self):
         item = model_to_dict(self, fields=['id', 'username', 'email'])
-        # if self.last_login:
-        #     item['last_login'] = self.last_login.strftime('%Y-%m-%d')
-        # else:
-        #     item['last_login'] = ''
-        #item['date_joined'] = self.date_joined.strftime('%Y-%m-%d')
         return item
 
     class Meta:

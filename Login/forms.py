@@ -40,7 +40,7 @@ class UserForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'email', 'is_active']
+        fields = ['username', 'password', 'email', 'is_active', 'is_superuser']
         widgets = {
             'email': EmailInput(
                 attrs={
@@ -48,6 +48,11 @@ class UserForm(ModelForm):
                 }
             ),
             'is_active': CheckboxInput(
+                attrs={
+                    'class': 'custom-control-input'
+                }
+            ),
+            'is_superuser': CheckboxInput(
                 attrs={
                     'class': 'custom-control-input'
                 }

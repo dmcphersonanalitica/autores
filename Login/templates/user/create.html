@@ -13,6 +13,15 @@
                     </div>
                 </div>
             </div>
+        {% elif field.label == 'Superusuario' %}
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div class="custom-control custom-switch">
+                        {% render_field field type="checkbox" class="custom-control-input form-control" id="customSwitch2" title=field.label autocomplete="off" %}
+                        <label class="custom-control-label" for="customSwitch1">{{ field.label }}</label>
+                    </div>
+                </div>
+            </div>
         {% elif field.label == 'Usuario' or field.label == 'Contraseña' or field.label == 'Email' %}
             <div class="col-md-4">
                 <div class="form-group">
