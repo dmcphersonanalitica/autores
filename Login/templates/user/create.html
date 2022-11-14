@@ -18,7 +18,7 @@
                 <div class="form-group">
                     <div class="custom-control custom-switch">
                         {% render_field field type="checkbox" class="custom-control-input form-control" id="customSwitch2" title=field.label autocomplete="off" %}
-                        <label class="custom-control-label" for="customSwitch1">{{ field.label }}</label>
+                        <label class="custom-control-label" for="customSwitch2">{{ field.label }}</label>
                     </div>
                 </div>
             </div>
@@ -45,6 +45,9 @@
                 </div>
             </div>
         {% endif %}
+
+        <label>{{ field.label }}</label>
+        {% render_field field class="form-control" title=field.label autocomplete="off" %}
     {% endfor %}
 {% endblock %}
 
