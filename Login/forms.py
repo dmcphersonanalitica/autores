@@ -12,6 +12,7 @@ class UserForm(ModelForm):
         self.fields['username'].widget.attrs['autofocus'] = True
         self.fields['email'].label = 'Email'
         self.fields['username'].label = 'Usuario'
+        self.fields['is_superuser'].label = 'Superusuario'
 
     def save(self, commit=True):
         data = {}
