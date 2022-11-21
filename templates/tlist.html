@@ -8,6 +8,14 @@
 {% endblock %}
 
 {% block content %}
+    {% if  father  == "sale" %}
+        <div class="alert alert-info alert-dismissible">
+            <h5><i class="icon fas fa-info"></i> ¡Información!</h5>
+            Se ha deshabilitado la opción de descargar reporte por errores en el mismo.
+            Estamos trabajando para darle solución y restablecer dicha opción.
+            Pedimos disculpas por las molestias ocasionadas.
+        </div>
+    {% endif %}
     <div class="card card-navy mt-3">
         <div class="card-header">
             <h3 class="card-title">
@@ -17,9 +25,9 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-        {% if  father  == "usuario" %}
-        <a class="btn btn-primary mb-3" href="{{ createUrl }}"><i class="fas fa-plus"></i> Nuevo registro</a>
-        {% endif %}
+            {% if  father  == "usuario" %}
+                <a class="btn btn-primary mb-3" href="{{ createUrl }}"><i class="fas fa-plus"></i> Nuevo registro</a>
+            {% endif %}
             <table class="table" id="data">
                 <thead>
                 {% block columns %}
