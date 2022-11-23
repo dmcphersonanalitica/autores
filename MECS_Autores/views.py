@@ -346,6 +346,7 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         try:
+            data = []
             sale = Ventas.objects.get(pk=self.kwargs['pk'])
             id = sale.libro.autor.user.id
 
@@ -374,7 +375,8 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
             else:
                 return HttpResponseRedirect(reverse_lazy('mecs:sale_list'))
         except Exception as ex:
-            pass
+            data['error'] = str(ex)
+            return data
         return HttpResponseRedirect(reverse_lazy('mecs:dashboard'))
 
 
