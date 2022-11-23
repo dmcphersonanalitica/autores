@@ -39,7 +39,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 data_value = []
                 for m in year:
                     cantidad = 0
-                    cantidad += Ventas.objects.filter(libro_id=i.id, fecha__year=m, estado='ACTIVO').aggregate(
+                    cantidad += Ventas.objects.filter(libro_id=i.id, fecha__year=m, estado='ACTIVO', cobrado=1).aggregate(
                         c=Coalesce(Sum('cantidad'), 0)).get('c')
                     data_value.append(cantidad)
                 data.append([i.titulo, data_value])
@@ -68,7 +68,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 for m in range(1, 13):
                     total = 0
                     for i in libros:
-                        total += Ventas.objects.filter(libro_id=i.id, fecha__year=year, fecha__month=m, estado='ACTIVO').only(
+                        total += Ventas.objects.filter(libro_id=i.id, fecha__year=year, fecha__month=m, estado='ACTIVO', cobrado=1).only(
                             'totales').aggregate(t=Coalesce(
                             Sum('totales'), 0, output_field=FloatField())).get('t')
                     if total > 0:
@@ -88,7 +88,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             for m in range(1, 13):
                 total = 0
-                total += Ventas.objects.filter(fecha__year=year, fecha__month=m, estado='ACTIVO').only('totales').aggregate(t=Coalesce(
+                total += Ventas.objects.filter(fecha__year=year, fecha__month=m, estado='ACTIVO', cobrado=1).only('totales').aggregate(t=Coalesce(
                     Sum('totales'), 0, output_field=FloatField())).get('t')
                 porciento = total * float(100) / float(total_general)
                 data.append([month[m - 1], float(porciento)])
@@ -111,7 +111,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 total_sum = 0
                 for y in years:
                     total = 0
-                    total += Ventas.objects.filter(libro__genero=g, fecha__year=y, estado='ACTIVO').aggregate(
+                    total += Ventas.objects.filter(libro__genero=g, fecha__year=y, estado='ACTIVO', cobrado=1).aggregate(
                         c=Coalesce(Sum('cantidad'), 0)).get('c')
                     data_temp.append(total)
                     total_sum += total
@@ -135,13 +135,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def count_ventas(self):
         if self.request.user.is_superuser:
-            ventas = Ventas.objects.filter(estado='ACTIVO').only('idventas').count()
+            ventas = Ventas.objects.filter(estado='ACTIVO', cobrado=1).only('idventas').count()
             return ventas
 
         libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
         ventas = 0
         for i in libros:
-            ventas += Ventas.objects.filter(libro_id=i.id, estado='ACTIVO').only('idventas').count()
+            ventas += Ventas.objects.filter(libro_id=i.id, estado='ACTIVO', cobrado=1).only('idventas').count()
         return ventas
 
     def count_libros_ventas(self):
@@ -149,7 +149,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
             total = 0
             for i in libros:
-                total += Ventas.objects.filter(libro_id=i.id, estado='ACTIVO').aggregate(
+                total += Ventas.objects.filter(libro_id=i.id, estado='ACTIVO', cobrado=1).aggregate(
                     c=Coalesce(Sum('cantidad'), 0)).get('c')
         return total
 
@@ -157,22 +157,22 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if not self.request.user.is_superuser:
             libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
             if len(libros) > 0:
-                last = Ventas.objects.filter(libro_id=libros.first().id, estado='ACTIVO').first().fecha
+                last = Ventas.objects.filter(libro_id=libros.first().id, estado='ACTIVO', cobrado=1).first().fecha
                 for i in libros:
-                    for j in Ventas.objects.filter(libro_id=i.id, estado='ACTIVO'):
+                    for j in Ventas.objects.filter(libro_id=i.id, estado='ACTIVO', cobrado=1):
                         if last < j.fecha:
                             last = j.fecha
                 return last
             else:
                 return date.today()
         else:
-            venta = Ventas.objects.filter(estado='ACTIVO').only('fecha').order_by('fecha').last()
+            venta = Ventas.objects.filter(estado='ACTIVO', cobrado=1).only('fecha').order_by('fecha').last()
             last = venta.fecha
             return last
 
     def total_ventas(self):
         if self.request.user.is_superuser:
-            total = Ventas.objects.filter(estado='ACTIVO').only('totales').aggregate(
+            total = Ventas.objects.filter(estado='ACTIVO', cobrado=1).only('totales').aggregate(
                 t=Coalesce(Sum('totales'), 0, output_field=FloatField(.02))).get('t')
             return total
 
@@ -180,7 +180,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         total = 0
         if len(libros) > 0:
             for i in libros:
-                total += Ventas.objects.filter(libro_id=i.id, estado='ACTIVO').only('totales').aggregate(
+                total += Ventas.objects.filter(libro_id=i.id, estado='ACTIVO', cobrado=1).only('totales').aggregate(
                     t=Coalesce(Sum('totales'), 0, output_field=FloatField(.02))).get('t')
         return total
 
@@ -228,7 +228,7 @@ class VentasListView(LoginRequiredMixin, ListView):
             if action == 'list':
                 position = 1
                 if request.user.is_superuser:
-                    ventas = Ventas.objects.filter(estado='ACTIVO').select_related('libro')
+                    ventas = Ventas.objects.filter(estado='ACTIVO', cobrado=1).select_related('libro')
                     for i in ventas:
                         item = i.toJson()
                         item['libro'] = i.libro.titulo
@@ -239,7 +239,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                     if hasattr(request.user, 'autores'):
                         libros = Libros.objects.filter(autor_id=request.user.autores.id)
                         for i in libros:
-                            ventas = Ventas.objects.filter(libro_id=i.id, estado='ACTIVO').select_related('libro')
+                            ventas = Ventas.objects.filter(libro_id=i.id, estado='ACTIVO', cobrado=1).select_related('libro')
                             for j in ventas:
                                 item = j.toJson()
                                 item['libro'] = j.libro.titulo
@@ -312,7 +312,7 @@ class VentasDetailView(LoginRequiredMixin, DetailView):
         context['action'] = 'detail'
         context['listUrl'] = reverse_lazy('mecs:sale_list')
         context['imageUrl'] = self.get_book_image()
-        context['fecha'] = self.get_date()  # self.object.fecha.strftime('%B %Y')
+        context['fecha'] = self.get_date()
         context['father'] = 'sale'
         return context
 
@@ -369,7 +369,7 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
                     'confirm': '{}{}'.format(settings.STATIC_URL, 'image/2.png'),
                     'xciento': xciento,
                     'adeudo': adeudo,
-                    'utilidades': monto
+                    'utilidades': utilidades
                 }
                 html = template.render(context)
                 response = HttpResponse(content_type='application/pdf')
@@ -470,17 +470,22 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         sale = Ventas.objects.get(pk=id)
         template = get_template('invoice.html')
         xciento = sale.libro.xciento * sale.totales / 100
-        sales = Ventas.objects.filter(libro__id=sale.libro.id).select_related('libro')
+        sales = Ventas.objects.filter(libro__id=sale.libro.id, fecha__lte=sale.fecha, cobrado=1, estado='ACTIVO').select_related('libro')
         monto = 0
         for sal in sales:
             monto += round(sal.libro.xciento * sal.totales / 100, 2)
         adeudo = sale.libro.anticipo - monto
+        utilidades = 0
+
+        if adeudo < 0:
+            utilidades = adeudo * -1
         context = {
             'sale': sale,
             'logo': '{}{}'.format(settings.STATIC_ROOT, '/image/1.png'),
             'confirm': '{}{}'.format(settings.STATIC_ROOT, '/image/2.png'),
             'xciento': xciento,
-            'adeudo': adeudo
+            'adeudo': adeudo,
+            'utilidades': utilidades
         }
         html = template.render(context)
 
