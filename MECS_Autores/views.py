@@ -369,7 +369,7 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
                     'confirm': '{}{}'.format(settings.STATIC_URL, 'image/2.png'),
                     'xciento': xciento,
                     'adeudo': adeudo,
-                    'utilidades': utilidades
+                    'utilidades': monto
                 }
                 html = template.render(context)
                 response = HttpResponse(content_type='application/pdf')

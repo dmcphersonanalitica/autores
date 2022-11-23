@@ -199,7 +199,7 @@
                                     {% if adeudo > 0 %}
                                         <p style="font-size: 12px;">{{ adeudo|floatformat:2 }}</p>
                                     {% else %}
-                                        <p style="font-size: 12px;">0,00</p>
+                                        <p style="font-size: 12px;">0,00 -- {{ adeudo|floatformat:2 }}</p>
                                     {% endif %}
                                 </td>
                             </tr>
