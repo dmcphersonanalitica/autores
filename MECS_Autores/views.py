@@ -358,12 +358,18 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
                 for sal in sales:
                     monto += round(sal.libro.xciento * sal.totales / 100, 2)
                 adeudo = sale.libro.anticipo - monto
+                utilidades = 0
+
+                if adeudo < 0:
+                    utilidades = adeudo * -1
+
                 context = {
                     'sale': sale,
                     'logo': '{}{}'.format(settings.STATIC_URL, 'image/1.png'),
                     'confirm': '{}{}'.format(settings.STATIC_URL, 'image/2.png'),
                     'xciento': xciento,
-                    'adeudo': adeudo
+                    'adeudo': adeudo,
+                    'utilidades': utilidades
                 }
                 html = template.render(context)
                 response = HttpResponse(content_type='application/pdf')
