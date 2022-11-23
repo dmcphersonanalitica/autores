@@ -353,7 +353,7 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
             if self.request.user.id == id or self.request.user.is_superuser:
                 template = get_template('invoice.html')
                 xciento = sale.libro.xciento * sale.totales / 100
-                sales = Ventas.objects.filter(libro__id=sale.libro.id, fecha__lte=sale.fecha).select_related('libro')
+                sales = Ventas.objects.filter(libro__id=sale.libro.id, fecha__lte=sale.fecha, cobrado=1).select_related('libro')
                 monto = 0
                 for sal in sales:
                     monto += round(sal.libro.xciento * sal.totales / 100, 2)
