@@ -20,6 +20,7 @@ import os
 from django.conf import settings
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+import datetime
 
 month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
          'Noviembre', 'Diciembre']
@@ -351,7 +352,7 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
             if self.request.user.id == id or self.request.user.is_superuser:
                 template = get_template('invoice.html')
                 xciento = sale.libro.xciento * sale.totales / 100
-                sales = Ventas.objects.filter(libro__id=sale.libro.id).select_related('libro')
+                sales = Ventas.objects.filter(libro__id=sale.libro.id, sampledate__lte=datetime.date(sale.fecha)).select_related('libro')
                 monto = 0
                 for sal in sales:
                     monto += round(sal.libro.xciento * sal.totales / 100, 2)
