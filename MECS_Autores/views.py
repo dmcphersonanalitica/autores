@@ -375,7 +375,7 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
                 return HttpResponseRedirect(reverse_lazy('mecs:sale_list'))
         except Exception as ex:
             pass
-        return HttpResponseRedirect(reverse_lazy('mecs:sale_list'))
+        return HttpResponseRedirect(reverse_lazy('mecs:dashboard'))
 
 
 class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
