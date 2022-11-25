@@ -69,6 +69,12 @@ class Ventas(models.Model):
 
     def toJson(self):
         item = model_to_dict(self, fields=['idventas', 'fecha', 'mercado', 'cantidad', 'precio', 'totales'])
+
+        if self.cobrado == 1:
+            item['cobrado'] = 'Si'
+        else:
+            item['cobrado'] = 'No'
+
         return item
 
     class Meta:
@@ -78,3 +84,42 @@ class Ventas(models.Model):
         db_table = 'ventas'
         ordering = ["fecha"]
         indexes = [models.Index(fields=['idventas', 'fecha', 'libro'])]
+
+
+class Reporteventas(models.Model):
+    titulo = models.CharField(db_column='Titulo', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    autor = models.CharField(db_column='Autor', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    isbn = models.CharField(db_column='ISBN', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    precioventa = models.DecimalField(db_column='PrecioVenta', max_digits=19, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    cantidad = models.IntegerField(db_column='Cantidad', blank=True, null=True)  # Field name made lowercase.
+    anticipo = models.DecimalField(db_column='Anticipo', max_digits=19, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    adeudo = models.DecimalField(db_column='Adeudo', max_digits=19, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    mercado = models.CharField(db_column='Mercado', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    regalias = models.DecimalField(db_column='Regalias', max_digits=19, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    totalventas = models.DecimalField(db_column='TotalVentas', max_digits=19, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    planpago = models.CharField(db_column='PlanPago', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    porciento = models.DecimalField(db_column='Porciento', max_digits=19, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    tipo = models.CharField(db_column='Tipo', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    fecha = models.DateField(db_column='Fecha', blank=True, null=True)  # Field name made lowercase.
+    enviado = models.IntegerField(db_column='Enviado', blank=True, null=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.fecha.__str__() + " --- " + self.titulo
+
+    def toJson(self):
+        item = model_to_dict(self, fields=['id', 'titulo', 'autor', 'fecha'])
+
+        if self.enviado == 1:
+            item['enviado'] = 'Si'
+        else:
+            item['enviado'] = 'No'
+
+        return item
+
+    class Meta:
+        managed = False
+        verbose_name = "Reporteventa"
+        verbose_name_plural = "Reporteventas"
+        db_table = 'reporteventas'
+        ordering = ["id"]
+        indexes = [models.Index(fields=['id', 'fecha', 'titulo'])]

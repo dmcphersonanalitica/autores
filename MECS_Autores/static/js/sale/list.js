@@ -20,11 +20,12 @@ $(function () {
             {"data": "cantidad"},
             {"data": "precio"},
             {"data": "totales"},
+            {"data": "cobrado"},
             {"data": "options"},
         ],
         columnDefs: [
             {
-                targets: [7],
+                targets: [8],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row){
@@ -34,6 +35,13 @@ $(function () {
                     /*if (superadm === 'si')
                         buttons += ' | <a href="/mecs/sales/mail/'+row.idventas+'/" class="btn bg-gradient-info btn-xs" style="width: 25px" title="Enviar reporte de venta"><i class="fas fa-envelope"></i></a>';*/
                     return buttons;
+                }
+            },
+            {
+                targets: [7],
+                class: 'text-center',
+                render: function (data, type, row){
+                    return data;
                 }
             },
             {

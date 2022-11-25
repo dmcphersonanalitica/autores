@@ -6,11 +6,10 @@
         <th scope="col">No</th>
         <th scope="col">Fecha</th>
         <th scope="col">Título</th>
-        <th scope="col">Mercado</th>
-        <th scope="col">Cantidad</th>
-        <th scope="col">Precio</th>
-        <th scope="col">Total</th>
-        <th scope="col">Cobrada</th>
+        <th scope="col">Autor</th>
+        {% if request.user.is_superuser %}
+            <th scope="col">Enviado</th>
+        {% endif %}
         <th scope="col">Operaciones</th>
     </tr>
 {% endblock %}
@@ -20,7 +19,7 @@
 {% endblock %}
 
 {% block script_list %}
-    <script src="{% static 'js/sale/list.js' %}"></script>
+    <script src="{% static 'js/report/list.js' %}"></script>
     <script>
         {% if request.user.is_superuser %}
             window.superadm = {args: 'si'};

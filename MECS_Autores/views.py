@@ -3,7 +3,7 @@ from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import EmailMessage
-from django.db.models import Sum, FloatField
+from django.db.models import Sum, FloatField, Q
 from django.db.models.functions import Coalesce
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -14,7 +14,7 @@ from django.views.generic import ListView, DetailView, TemplateView, View, FormV
 
 from Login.mixins import IsSuperuserMixin
 from MECS_Autores.forms import EmailForm
-from MECS_Autores.models import Ventas, Libros, Autores
+from MECS_Autores.models import Ventas, Libros, Autores, Reporteventas
 from core.settings import STATIC_URL
 import os
 from django.conf import settings
@@ -39,7 +39,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 data_value = []
                 for m in year:
                     cantidad = 0
-                    cantidad += Ventas.objects.filter(libro_id=i.id, fecha__year=m, estado='ACTIVO', cobrado=1).aggregate(
+                    cantidad += Ventas.objects.filter(libro_id=i.id, fecha__year=m, estado='ACTIVO',
+                                                      cobrado=1).aggregate(
                         c=Coalesce(Sum('cantidad'), 0)).get('c')
                     data_value.append(cantidad)
                 data.append([i.titulo, data_value])
@@ -68,7 +69,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 for m in range(1, 13):
                     total = 0
                     for i in libros:
-                        total += Ventas.objects.filter(libro_id=i.id, fecha__year=year, fecha__month=m, estado='ACTIVO', cobrado=1).only(
+                        total += Ventas.objects.filter(libro_id=i.id, fecha__year=year, fecha__month=m, estado='ACTIVO',
+                                                       cobrado=1).only(
                             'totales').aggregate(t=Coalesce(
                             Sum('totales'), 0, output_field=FloatField())).get('t')
                     if total > 0:
@@ -88,7 +90,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             for m in range(1, 13):
                 total = 0
-                total += Ventas.objects.filter(fecha__year=year, fecha__month=m, estado='ACTIVO', cobrado=1).only('totales').aggregate(t=Coalesce(
+                total += Ventas.objects.filter(fecha__year=year, fecha__month=m, estado='ACTIVO', cobrado=1).only(
+                    'totales').aggregate(t=Coalesce(
                     Sum('totales'), 0, output_field=FloatField())).get('t')
                 porciento = total * float(100) / float(total_general)
                 data.append([month[m - 1], float(porciento)])
@@ -111,7 +114,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 total_sum = 0
                 for y in years:
                     total = 0
-                    total += Ventas.objects.filter(libro__genero=g, fecha__year=y, estado='ACTIVO', cobrado=1).aggregate(
+                    total += Ventas.objects.filter(libro__genero=g, fecha__year=y, estado='ACTIVO',
+                                                   cobrado=1).aggregate(
                         c=Coalesce(Sum('cantidad'), 0)).get('c')
                     data_temp.append(total)
                     total_sum += total
@@ -228,7 +232,7 @@ class VentasListView(LoginRequiredMixin, ListView):
             if action == 'list':
                 position = 1
                 if request.user.is_superuser:
-                    ventas = Ventas.objects.filter(estado='ACTIVO', cobrado=1).select_related('libro')
+                    ventas = Ventas.objects.filter(estado='ACTIVO').select_related('libro')
                     for i in ventas:
                         item = i.toJson()
                         item['libro'] = i.libro.titulo
@@ -239,7 +243,7 @@ class VentasListView(LoginRequiredMixin, ListView):
                     if hasattr(request.user, 'autores'):
                         libros = Libros.objects.filter(autor_id=request.user.autores.id)
                         for i in libros:
-                            ventas = Ventas.objects.filter(libro_id=i.id, estado='ACTIVO', cobrado=1).select_related('libro')
+                            ventas = Ventas.objects.filter(libro_id=i.id, estado='ACTIVO').select_related('libro')
                             for j in ventas:
                                 item = j.toJson()
                                 item['libro'] = j.libro.titulo
@@ -317,7 +321,58 @@ class VentasDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class VentasInvoicePdfView(LoginRequiredMixin, View):
+class ReporteVentasListView(LoginRequiredMixin, ListView):
+    model = Reporteventas
+    template_name = "relist.html"
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = []
+        try:
+            action = request.POST['action']
+            if action == 'list':
+                position = 1
+                if request.user.is_superuser:
+                    reportes = Reporteventas.objects.all()
+                    for i in reportes:
+                        item = i.toJson()
+                        date = month[i.fecha.month - 1] + ' ' + i.fecha.strftime('%Y')
+                        item['fecha_format'] = date
+                        data.append(item)
+                else:
+                    if hasattr(request.user, 'autores'):
+                        libros = Libros.objects.filter(autor_id=request.user.autores.id)
+                        for i in libros:
+                            reportes = Reporteventas.objects.filter(
+                                Q(titulo=i.titulo) | Q(autor=i.autor.nombre + ' ' + i.autor.apellidos))
+                            for j in reportes:
+                                item = j.toJson()
+                                date = month[j.fecha.month - 1] + ' ' + j.fecha.strftime('%Y')
+                                item['fecha_format'] = date
+                                data.append(item)
+                        data = sorted(data, key=lambda reporte: reporte['fecha'])
+                for d in data:
+                    d['position'] = position
+                    position += 1
+            else:
+                data['error'] = '¡Ha ocurrido un error!'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de reportes'
+        context['action'] = 'list'
+        context['father'] = 'report'
+        return context
+
+
+class ReporteVentasInvoicePdfView(LoginRequiredMixin, View):
     def link_callback(self, uri, rel):
         """
         Convert HTML URIs to absolute system paths so xhtml2pdf can access those
@@ -347,50 +402,32 @@ class VentasInvoicePdfView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
             data = []
-            sale = Ventas.objects.get(pk=self.kwargs['pk'])
-            id = sale.libro.autor.user.id
+            report = Reporteventas.objects.get(pk=self.kwargs['pk'])
+            template = get_template('invoice.html')
+            context = {
+                'report': report,
+                'logo': '{}{}'.format(settings.STATIC_URL, 'image/1.png'),
+                'confirm': '{}{}'.format(settings.STATIC_URL, 'image/2.png')
+            }
+            html = template.render(context)
+            response = HttpResponse(content_type='application/pdf')
+            response[
+                'Content-Disposition'] = 'attachment; filename="' + report.titulo + ' -- ' + report.fecha.strftime(
+                '%B %Y') + '.pdf"'
+            pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
+            return response
 
-            if self.request.user.id == id or self.request.user.is_superuser:
-                template = get_template('invoice.html')
-                xciento = sale.libro.xciento * sale.totales / 100
-                sales = Ventas.objects.filter(libro__id=sale.libro.id, idventas__lte=sale.idventas, fecha__lte=sale.fecha, cobrado=1, estado='ACTIVO').select_related('libro')
-                monto = 0
-                for sal in sales:
-                    monto += round(sal.libro.xciento * sal.totales / 100, 2)
-                adeudo = sale.libro.anticipo - monto
-                utilidades = 0
-
-                if adeudo < 0:
-                    utilidades = adeudo * -1
-
-                context = {
-                    'sale': sale,
-                    'logo': '{}{}'.format(settings.STATIC_URL, 'image/1.png'),
-                    'confirm': '{}{}'.format(settings.STATIC_URL, 'image/2.png'),
-                    'xciento': xciento,
-                    'adeudo': adeudo,
-                    'utilidades': utilidades
-                }
-                html = template.render(context)
-                response = HttpResponse(content_type='application/pdf')
-                response[
-                    'Content-Disposition'] = 'attachment; filename="' + sale.libro.titulo + ' -- ' + sale.fecha.strftime(
-                    '%B %Y') + '.pdf"'
-                pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
-                return response
-            else:
-                return HttpResponseRedirect(reverse_lazy('mecs:sale_list'))
         except Exception as ex:
             data['error'] = str(ex)
             return data
         return HttpResponseRedirect(reverse_lazy('mecs:dashboard'))
 
 
-class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
+class ReporteVentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
     form_class = EmailForm
     template_name = 'mail.html'
-    success_url = reverse_lazy('mecs:sale_list')
-    url_redirect = reverse_lazy('mecs:sale_list')
+    success_url = reverse_lazy('mecs:report_list')
+    url_redirect = reverse_lazy('mecs:report_list')
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -423,11 +460,12 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         return path
 
     def get(self, request, *args, **kwargs):
-        sale = Ventas.objects.get(pk=kwargs['pk'])
-        to = sale.libro.autor.correo
+        report = Reporteventas.objects.get(pk=kwargs['pk'])
+        libro = Libros.objects.filter(titulo=report.titulo).select_related('autor')
+        to = libro.autor.correo
         month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
                  'Noviembre', 'Diciembre']
-        date = month[sale.fecha.month - 1] + ' ' + sale.fecha.strftime('%Y')
+        date = month[report.fecha.month - 1] + ' ' + report.fecha.strftime('%Y')
         initial_data = {'to': to, 'asunto': 'Nuevo reporte de pago.', 'mensaje': 'Estimado escritor: \n'
                                                                                  'Cumpliendo con lo establecido y '
                                                                                  'pactado en nuestro contrato, '
@@ -435,7 +473,7 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
                                                                                  'enviarle el reporte de venta '
                                                                                  'correspondiente a la fecha '
                                                                                  + date + ' del libro '
-                                                                                 + sale.libro.titulo +
+                                                                                 + report.titulo +
                                                                                  '. Agradecemos una vez más su '
                                                                                  'presencia en nuestro catálogo. '
                                                                                  'Esperamos su acuse de recibo. '
@@ -461,31 +499,18 @@ class VentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
                     file = self.Invoice_PDF(self.kwargs['pk'])
                     email.attach_file(file)
                     email.send()
-                    data['listUrl'] = reverse_lazy('mecs:sale_list')
+                    data['listUrl'] = reverse_lazy('mecs:report_list')
         except Exception as ex:
             data['error'] = str(ex)
         return JsonResponse(data)
 
     def Invoice_PDF(self, id):
-        sale = Ventas.objects.get(pk=id)
+        report = Reporteventas.objects.get(pk=id)
         template = get_template('invoice.html')
-        xciento = sale.libro.xciento * sale.totales / 100
-        sales = Ventas.objects.filter(libro__id=sale.libro.id, fecha__lte=sale.fecha, cobrado=1, estado='ACTIVO').select_related('libro')
-        monto = 0
-        for sal in sales:
-            monto += round(sal.libro.xciento * sal.totales / 100, 2)
-        adeudo = sale.libro.anticipo - monto
-        utilidades = 0
-
-        if adeudo < 0:
-            utilidades = adeudo * -1
         context = {
-            'sale': sale,
+            'report': report,
             'logo': '{}{}'.format(settings.STATIC_ROOT, '/image/1.png'),
-            'confirm': '{}{}'.format(settings.STATIC_ROOT, '/image/2.png'),
-            'xciento': xciento,
-            'adeudo': adeudo,
-            'utilidades': utilidades
+            'confirm': '{}{}'.format(settings.STATIC_ROOT, '/image/2.png')
         }
         html = template.render(context)
 

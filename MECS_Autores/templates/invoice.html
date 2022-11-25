@@ -34,7 +34,7 @@
                         <h2>Autor:</h2>
                     </td>
                     <td width="70%">
-                        <p style="text-align: center; padding-left: 20px; font-size: 12px;">{{ sale.libro.autor.nombre }} {{ sale.libro.autor.apellidos }}</p>
+                        <p style="text-align: center; padding-left: 20px; font-size: 12px;">{{ report.autor }}</p>
                     </td>
                 </tr>
                 <tr>
@@ -42,7 +42,7 @@
                         <h2>Libro:</h2>
                     </td>
                     <td width="70%">
-                        <p style="text-align: center; padding-left: 20px; font-size: 12px;">{{ sale.libro.titulo }}</p>
+                        <p style="text-align: center; padding-left: 20px; font-size: 12px;">{{ report.titulo }}</p>
                     </td>
                 </tr>
                 </tbody>
@@ -59,20 +59,19 @@
             <h2>Mes:</h2>
         </td>
         <td>
-            <p style="font-size: 12px;">{{ sale.fecha|date:'F' }}</p>
+            <p style="font-size: 12px;">{{ report.fecha|date:'F' }}</p>
         </td>
         <td width="8%">
             <h2>Año:</h2>
         </td>
         <td>
-            <p style="font-size: 12px;">{{ sale.fecha|date:'Y' }}</p>
+            <p style="font-size: 12px;">{{ report.fecha|date:'Y' }}</p>
         </td>
         <td width="10%">
             <h2>Tipo:</h2>
         </td>
         <td>
-            ---
-
+            <p style="font-size: 12px;">{{ report.tipo }}</p>
         </td>
     </tr>
     </tbody>
@@ -95,19 +94,19 @@
                 <tbody>
                 <tr>
                     <td align="center" style="padding-top: 5px">
-                        <p style="font-size: 12px;">{{ sale.libro.titulo }}</p>
+                        <p style="font-size: 12px;">{{ report.titulo }}</p>
                     </td>
                     <td align="center" style="padding-top: 5px">
-                        <p style="font-size: 12px;">{{ sale.mercado }}</p>
+                        <p style="font-size: 12px;">{{ report.mercado }}</p>
                     </td>
                     <td align="center" style="padding-top: 5px">
-                        <p style="font-size: 12px;">{{ sale.cantidad }}</p>
+                        <p style="font-size: 12px;">{{ report.cantidad }}</p>
                     </td>
                     <td align="center" style="padding-top: 5px">
-                        <p style="font-size: 12px;">{{ sale.libro.pago }}</p>
+                        <p style="font-size: 12px;">{{ report.planpago }}</p>
                     </td>
                     <td align="center" style="padding-top: 5px">
-                        <p style="font-size: 12px;">{{ xciento|floatformat:2 }}</p>
+                        <p style="font-size: 12px;">{{ report.porciento }}</p>
                     </td>
                 </tr>
                 </tbody>
@@ -148,7 +147,7 @@
                                     <h2>Unidades Vendidas</h2>
                                 </td>
                                 <td align="center" style="padding-top: 5px">
-                                    <p style="font-size: 12px;">{{ sale.cantidad }}</p>
+                                    <p style="font-size: 12px;">{{ report.cantidad }}</p>
                                 </td>
                             </tr>
                             <tr>
@@ -156,7 +155,7 @@
                                     <h2>Precio de Venta</h2>
                                 </td>
                                 <td align="center" style="padding-top: 5px">
-                                    <p style="font-size: 12px;">{{ sale.precio|floatformat:2 }}</p>
+                                    <p style="font-size: 12px;">{{ report.precioventa }}</p>
                                 </td>
                             </tr>
                             <tr>
@@ -164,7 +163,7 @@
                                     <h2>Total de Ventas</h2>
                                 </td>
                                 <td align="center" style="padding-top: 5px">
-                                    <p style="font-size: 12px;">{{ sale.totales|floatformat:2 }}</p>
+                                    <p style="font-size: 12px;">{{ report.totalventas }}</p>
                                 </td>
                             </tr>
                             <tr>
@@ -172,7 +171,7 @@
                                     <h2>Porciento de Autor</h2>
                                 </td>
                                 <td align="center" style="padding-top: 5px">
-                                    <p style="font-size: 12px;">{{ xciento|floatformat:2 }}</p>
+                                    <p style="font-size: 12px;">{{ report.porciento }}</p>
                                 </td>
                             </tr>
                             <tr>
@@ -180,7 +179,7 @@
                                     <h2>Anticipo</h2>
                                 </td>
                                 <td align="center" style="padding-top: 5px">
-                                    <p style="font-size: 12px;">{{ sale.libro.anticipo|floatformat:2 }}</p>
+                                    <p style="font-size: 12px;">{{ report.anticipo }}</p>
                                 </td>
                             </tr>
                             <tr>
@@ -188,7 +187,7 @@
                                     <h2>Monto amortizado en la etapa</h2>
                                 </td>
                                 <td align="center" style="padding-top: 5px">
-                                    <p style="font-size: 12px;">{{ xciento|floatformat:2 }}</p>
+                                    <p style="font-size: 12px;">{{ report.porciento }}</p>
                                 </td>
                             </tr>
                             <tr>
@@ -196,11 +195,7 @@
                                     <h2>Monto adeudado por pago adelantado</h2>
                                 </td>
                                 <td align="center" style="padding-top: 5px">
-                                    {% if adeudo > 0 %}
-                                        <p style="font-size: 12px;">{{ adeudo|floatformat:2 }}</p>
-                                    {% else %}
-                                        <p style="font-size: 12px;">0,00</p>
-                                    {% endif %}
+                                        <p style="font-size: 12px;">{{ report.adeudo }}</p>
                                 </td>
                             </tr>
                             <tr>
@@ -208,11 +203,7 @@
                                     <h2>Utilidades del autor</h2>
                                 </td>
                                 <td align="center" style="padding-top: 5px">
-                                    {% if utilidades > 0 %}
-                                        <p style="font-size: 12px;">{{ utilidades|floatformat:1 }}</p>
-                                    {% else %}
-                                        <p style="font-size: 12px;">0,00</p>
-                                    {% endif %}
+                                        <p style="font-size: 12px;">{{ report.regalias }}</p>
                                 </td>
                             </tr>
                             </tbody>

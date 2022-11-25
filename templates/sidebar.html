@@ -53,6 +53,14 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{% url "mecs:report_list" %}" class="nav-link {% if father == 'report' or father == none %}active{% endif %}">
+                        <i class="nav-icon fas fa-file-pdf"></i>
+                        <p>
+                            Reportes
+                        </p>
+                    </a>
+                </li>
                 {% if request.user.is_superuser %}
                     <li class="nav-item">
                         <a href="{% url "login:user_list" %}"
