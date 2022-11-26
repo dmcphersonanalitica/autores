@@ -348,7 +348,7 @@ class ReporteVentasListView(LoginRequiredMixin, ListView):
                         libros = Libros.objects.filter(autor_id=request.user.autores.id)
                         for i in libros:
                             reportes = Reporteventas.objects.filter(
-                                Q(titulo=i.titulo) | Q(autor=i.autor.nombre + ' ' + i.autor.apellidos))
+                                Q(titulo=i.titulo) | Q(autor__contains=i.autor.nombre and i.autor.apellidos))
                             for j in reportes:
                                 item = j.toJson()
                                 date = month[j.fecha.month - 1] + ' ' + j.fecha.strftime('%Y')
