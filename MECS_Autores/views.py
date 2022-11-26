@@ -463,7 +463,7 @@ class ReporteVentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
         report = Reporteventas.objects.get(pk=kwargs['pk'])
         libros = Libros.objects.filter(titulo=report.titulo).select_related('autor')
         librosList = list(libros)
-        if librosList.count() > 0:
+        if len(librosList) > 0:
             to = librosList[0].autor.correo
         else:
             to = ''
