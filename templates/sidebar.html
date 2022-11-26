@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url "mecs:sale_list" %}" class="nav-link {% if father == 'sale' or father == none %}active{% endif %}">
+                    <a href="{% url "mecs:sale_list" %}" class="nav-link {% if father == 'sale'%}active{% endif %}">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>
                             Ventas
@@ -55,7 +55,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{% url "mecs:report_list" %}" class="nav-link {% if father == 'report' or father == none %}active{% endif %}">
-                        <i class="nav-icon fas fa-file-pdf"></i>
+                        <i class="nav-icon fas fa-file"></i>
                         <p>
                             Reportes
                         </p>

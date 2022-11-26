@@ -30,7 +30,7 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row){
                     let superadm = window.superadm.args;
-                    var buttons = '<a href="/mecs/sales/detail/'+row.idventas+'/" class="btn bg-gradient-success btn-xs" style="width: 25px" title="Ver detalles de venta"><i class="fas fa-info"></i></a> | ';
+                    var buttons = '<a href="/mecs/sales/detail/'+row.idventas+'/" class="btn bg-gradient-success btn-xs" style="width: 25px" title="Ver detalles de venta"><i class="fas fa-info"></i></a>';
                     //buttons += '<a href="/mecs/sales/invoice/pdf/'+row.idventas+'/" class="btn bg-gradient-secondary btn-xs" style="width: 25px" title="Descargar reporte de venta"><i class="fas fa-download"></i></a>';
                     /*if (superadm === 'si')
                         buttons += ' | <a href="/mecs/sales/mail/'+row.idventas+'/" class="btn bg-gradient-info btn-xs" style="width: 25px" title="Enviar reporte de venta"><i class="fas fa-envelope"></i></a>';*/

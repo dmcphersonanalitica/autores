@@ -461,8 +461,12 @@ class ReporteVentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         report = Reporteventas.objects.get(pk=kwargs['pk'])
-        libro = Libros.objects.filter(titulo=report.titulo).select_related('autor')
-        to = libro.autor.correo
+        libros = Libros.objects.filter(titulo=report.titulo).select_related('autor')
+        librosList = list(libros)
+        if librosList.count() > 0:
+            to = librosList[0].autor.correo
+        else:
+            to = ''
         month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
                  'Noviembre', 'Diciembre']
         date = month[report.fecha.month - 1] + ' ' + report.fecha.strftime('%Y')
@@ -497,8 +501,11 @@ class ReporteVentasSendEmail(LoginRequiredMixin, IsSuperuserMixin, FormView):
                                          'Editorial D\'McPherson <contabilidad@dmcphersoneditorial.com>',
                                          [cd['to']])
                     file = self.Invoice_PDF(self.kwargs['pk'])
+                    report = Reporteventas.objects.get(pk=self.kwargs['pk'])
+                    report.enviado = 1
                     email.attach_file(file)
                     email.send()
+                    report.save()
                     data['listUrl'] = reverse_lazy('mecs:report_list')
         except Exception as ex:
             data['error'] = str(ex)

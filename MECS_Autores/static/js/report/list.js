@@ -16,7 +16,7 @@ $(function () {
         },
         columns: [
             {"data": "position"},
-            {"data": "fecha"},
+            {"data": "fecha_format"},
             {"data": "titulo"},
             {"data": "autor"},
             {"data": "enviado"},
@@ -81,7 +81,7 @@ $(function () {
         },
         columns: [
             {"data": "position"},
-            {"data": "fecha"},
+            {"data": "fecha_format"},
             {"data": "titulo"},
             {"data": "autor"},
             {"data": "options"},
