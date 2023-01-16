@@ -161,12 +161,16 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if not self.request.user.is_superuser:
             libros = Libros.objects.filter(autor_id=self.request.user.autores.id).only('id')
             if len(libros) > 0:
-                last = Ventas.objects.filter(libro_id=libros.first().id, estado='ACTIVO', cobrado=1).first().fecha
-                for i in libros:
-                    for j in Ventas.objects.filter(libro_id=i.id, estado='ACTIVO', cobrado=1):
-                        if last < j.fecha:
-                            last = j.fecha
-                return last
+                ventas = Ventas.objects.filter(libro_id=libros.first().id, estado='ACTIVO', cobrado=1)
+                if len(ventas) > 0:
+                    last = Ventas.objects.filter(libro_id=libros.first().id, estado='ACTIVO', cobrado=1).first().fecha
+                    for i in libros:
+                        for j in Ventas.objects.filter(libro_id=i.id, estado='ACTIVO', cobrado=1):
+                            if last < j.fecha:
+                                last = j.fecha
+                    return last
+                else:
+                    return date.today()
             else:
                 return date.today()
         else:
