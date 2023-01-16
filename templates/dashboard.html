@@ -110,7 +110,7 @@
                         <div class="info-box-content">
                             <span class="info-box-text">Última venta</span>
                             <span class="info-box-number">
-                                {% if last_sale != '---' %}
+                                {% if sales > 0 %}
                                     {{ last_sale|date:'F Y' }}
                                 {% else %}
                                     ---

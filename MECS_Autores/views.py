@@ -169,9 +169,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                                 last = j.fecha
                     return last
                 else:
-                    return '---'
+                    return date.today()
             else:
-                return '---'
+                return date.today()
         else:
             venta = Ventas.objects.filter(estado='ACTIVO', cobrado=1).only('fecha').order_by('fecha').last()
             last = venta.fecha
