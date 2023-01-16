@@ -109,7 +109,13 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Última venta</span>
-                            <span class="info-box-number">{{ last_sale|date:'F Y' }}</span>
+                            <span class="info-box-number">
+                                {% if last_sale != '---' %}
+                                    {{ last_sale|date:'F Y' }}
+                                {% else %}
+                                    ---
+                                {% endif %}
+                            </span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
